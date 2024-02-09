@@ -49,23 +49,35 @@
   <div class="post-content e-content" itemprop="articleBody">
     <h2 id="prelab">Prelab</h2>
 
-<ul>
-  <li>
-    <p>Setup: Briefly describe the steps taken to set up your computer for Lab 2, showing any results (i.e. MAC address printing)</p>
-  </li>
-  <li>
-    <p>Codebase: Add a brief explanation of your understanding of the codebase and how Bluetooth works between your computer and the Artemis</p>
-  </li>
-</ul>
+<blockquote>
+  <p>Setup: Briefly describe the steps taken to set up your computer for Lab 2, showing any results (i.e. MAC address printing)</p>
+</blockquote>
+
+<p>In the serial monitor of Arduino, MAC address of the bluetooth device is printed:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Advertising BLE with MAC: c0:89:f0:6b:6:4b
+</code></pre></div></div>
+
+<p>In the <code class="language-plaintext highlighter-rouge">connection.yaml</code> file of the jupyter notebook, I set the MAC address of the target bluetooth device as following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>artemis_address: 'C0:89:F0:6B:06:4B'
+</code></pre></div></div>
+
+<p>The uuid of the bluetooth is also reset with the newly generated one.</p>
+
+<p><img src="/FastRobots/images/Lab1/generate-uuid.png" alt="uuid" /></p>
+
+<blockquote>
+  <p>Codebase: Add a brief explanation of your understanding of the codebase and how Bluetooth works between your computer and the Artemis</p>
+</blockquote>
+
+<p>The codebase scans all nearby devices and pair to the exact atemis board with the unique uuid that I generated.</p>
+
+<p>Some of the connection process varies by the different operating systems that users may have on their computer.</p>
+
+<p>Then all common functions are provided through the class <code class="language-plaintext highlighter-rouge">ArtemisBLEController</code>, which supports reading and writing data to the ble, and creates a notifier and callback function to process the data received by itself.</p>
 
 <h2 id="tasks">Tasks</h2>
-
-<ul>
-  <li>Configurations: Show what the relevant configurations, anything that was specifically needed to address the tasks.</li>
-  <li>Include a brief explanation on what you did and results for each task.</li>
-  <li>Address all questions posed in the lab.</li>
-  <li>Include screenshots, screen recordings, pictures, or videos of relevant results (i.e. messages received in Jupyter Notebook, serial terminal print of messages received by Artemis).</li>
-</ul>
 
 <h3 id="11">1.1</h3>
 
@@ -378,6 +390,24 @@ avg rrt = 121.423779296875
 
 <h2 id="discussion">Discussion</h2>
 
+<blockquote>
+  <p>Briefly describe what you’ve learned, challenges that you faced, and/or any unique solutions used to fix problems. It is important to keep these writeups succinct. You will not get extra points for writing more words if the content doesn’t contribute to communicating your understanding of the lab material.</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>The compiling process on M1 Mac is extremely slow and requires patience.</p>
+  </li>
+  <li>
+    <p>The communication rate between computer and ble is important, they need to match each other.</p>
+  </li>
+  <li>
+    <p>If not set the uuid properly, python program on my computer may connect to some other’s ble device.</p>
+  </li>
+  <li>
+    <p>Jupyter notebook is hard to manipulate in some scenarios. Many of its control logic differs from normal python script.</p>
+  </li>
+</ol>
 
   </div><a class="u-url" href="/FastRobots/jekyll/update/2024/01/26/Lab1.html" hidden></a>
 </article>
