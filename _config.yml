@@ -22,7 +22,7 @@ title: Fast Robots 2024 Spring
 email: dy297@cornell.edu
 description: >- # this means to ignore newlines until "baseurl:"
   This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/FastRobots" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 linkedin_username: ding-yang-829248219
 github_username:  yang-d19

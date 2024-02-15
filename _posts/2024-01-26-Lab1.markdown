@@ -1,0 +1,349 @@
+---
+layout: post
+title:  "Lab1"
+date:   2024-01-26 23:46:21 -0500
+categories: jekyll update
+---
+
+
+## Prelab
+
+> Setup: Briefly describe the steps taken to set up your computer for Lab 2, showing any results (i.e. MAC address printing)
+
+In the serial monitor of Arduino, MAC address of the bluetooth device is printed:
+
+```
+Advertising BLE with MAC: c0:89:f0:6b:6:4b
+```
+
+In the `connection.yaml` file of the jupyter notebook, I set the MAC address of the target bluetooth device as following:
+
+```
+artemis_address: 'C0:89:F0:6B:06:4B'
+```
+
+The uuid of the bluetooth is also reset with the newly generated one.
+
+![uuid](/FastRobots/images/Lab1/generate-uuid.png)
+
+
+> Codebase: Add a brief explanation of your understanding of the codebase and how Bluetooth works between your computer and the Artemis
+
+
+The codebase scans all nearby devices and pair to the exact atemis board with the unique uuid that I generated.
+
+Some of the connection process varies by the different operating systems that users may have on their computer. 
+
+Then all common functions are provided through the class `ArtemisBLEController`, which supports reading and writing data to the ble, and creates a notifier and callback function to process the data received by itself.
+
+
+## Tasks
+
+### 1.1
+
+> Hook the Artemis board up to your computer, and follow the instructions from bulletpoint 2 above (“Introduction” and “Arduino Installation”).
+
+Required libraries are downloaded successfully.
+
+### 1.2
+
+> From the setup instructions linked above, follow the instructions in “Example: Blink it Up”.
+
+![upload](/FastRobots/images/Lab1/upload.png)
+
+### 1.3
+
+> In File->Examples->Artemis Examples, run Example4_Serial. (Note: to view the output and provide input open the serial monitor in the upper right hand corner of the script window.)
+
+![serial-echo](/FastRobots/images/Lab1/serial-echo.png)
+
+### 1.4
+
+> In File->Examples->Artemis Examples, run Example2_analogRead to test your temperature sensor. Try blowing on or touching the chip to change its temperature. It may take a while to transfer your heat.
+
+![tmp-read](/FastRobots/images/Lab1/tmp-read.png)
+
+### 1.5
+
+> In File->Examples->PDM, run Example1_MicrophoneOutput to test your microphone. E.g. try whistling or speaking to change the highest frequency.
+
+![microphone](/FastRobots/images/Lab1/microphone.png)
+
+
+
+
+
+### 2.1
+
+> Send an *ECHO* command with a string value from the computer to the Artemis board, and receive an augmented string on the computer.
+
+The arduino side:
+
+![task1-arduino](/FastRobots/images/Lab1/task1-arduino.png)
+
+The jupyter notebook side:
+
+![task1-jupyter](/FastRobots/images/Lab1/task1-jupyter.png)
+
+### 2.2
+
+> Add a command GET_TIME_MILLIS which makes the robot reply write a string such as “T:123456” to the string characteristic.
+
+In the arduino side:
+
+```c
+case GET_TIME_MILLIS: {
+    const int t = millis();
+    tx_estring_value.clear();
+    tx_estring_value.append("T: ");
+    tx_estring_value.append(t);
+    tx_characteristic_string.writeValue(tx_estring_value.c_str());
+    break;
+}
+```
+
+The jupyter side:
+
+![task2-get-ms](/FastRobots/images/Lab1/task2-get-ms.png)
+
+### 2.3
+
+> Setup a notification handler in Python to receive the string value (the **BLEStringCharactersitic** in Arduino) from the Artemis board. In the callback function, extract the time from the string.
+
+```python
+def notification_handler(uuid, byte_array):
+    time_ms_str = ble.bytearray_to_string(byte_array)
+    print(time_ms_str)
+    
+ble.start_notify(ble.uuid['RX_STRING'], notification_handler)
+```
+
+### 2.4
+
+> Write a loop that gets the current time in milliseconds and sends it to your laptop to be received and processed by the notification handler. Collect these values for a few seconds and use the time stamps to determine how fast messages can be sent. What is the effective data transfer rate of this method?
+
+In the arduino side, send current time in millisecond form in the write_data() function.
+
+```c
+void write_data() {
+    currentMillis = millis();
+    if (currentMillis - previousMillis > 0) {
+      
+        tx_estring_value.clear();
+        tx_estring_value.append("T: ");
+        tx_estring_value.append((const int)currentMillis);
+        tx_characteristic_string.writeValue(tx_estring_value.c_str());
+
+        previousMillis = currentMillis;
+    }
+}
+```
+
+In the loop() function, call write_data() function
+
+```c
+void loop() {
+    // Listen for connections
+    BLEDevice central = BLE.central();
+    // If a central is connected to the peripheral
+    if (central) {
+        Serial.print("Connected to: ");
+        Serial.println(central.address());
+        // While central is connected
+        while (central.connected()) {
+            // Send data
+            write_data();
+            // Read data
+            read_data();
+        }
+        Serial.println("Disconnected");
+    }
+}
+```
+
+Result:
+
+![](/FastRobots/images/Lab1/callback-time-ms-string.png)
+
+The average time interval is 12.54 ms
+
+Effective data transfer rate is 80 msg/second
+
+### 2.5
+
+> Now create an array that can store time stamps. This array should be defined globally so that other functions can access it if need be. In the loop, rather than send each time stamp, place each time stamp into the array. (Note: you’ll need some extra logic to determine when your array is full so you don’t “over fill” the array.) Then add a command SEND_TIME_DATA which loops the array and sends each data point as a string to your laptop to be processed. (You can store these values in a list in python to determine if all the data was sent over.)
+
+Arduino:
+
+```c
+if (end_pt < buffer_size) {
+  time_stamps[end_pt] = currentMillis;
+  end_pt++;
+}
+```
+
+```c
+case SEND_TIME_DATA: {
+    for (int i = 0; i < end_pt; i++) {
+      tx_estring_value.clear();
+      tx_estring_value.append("T: ");
+      tx_estring_value.append(time_stamps[i]);
+      tx_characteristic_string.writeValue(tx_estring_value.c_str());
+    }
+    // reset the buffer
+    end_pt = 0;
+
+    break;
+}
+```
+
+### 2.6
+
+> Add a second array that is the same size as the time stamp array. Use this array to store temperature readings. Each element in both arrays should correspond, e.e., the first time stamp was recorded at the same time as the first temperature reading. Then add a command GET_TEMP_READINGS that loops through both arrays concurrently and sends each temperature reading with a time stamp. The notification handler should parse these strings and add populate the data into two lists.
+
+```c
+if (end_pt < buffer_size) {
+    time_stamps[end_pt] = currentMillis;
+    temperatures[end_pt] = getTempDegF();
+    end_pt++;
+}
+```
+
+```c
+case GET_TEMP_READINGS: {
+    for (int i = 0; i < end_pt; i++) {
+      tx_estring_value.clear();
+
+      tx_estring_value.append(time_stamps[i]);
+      tx_estring_value.append("|");
+      tx_estring_value.append(temperatures[i]);
+
+      tx_characteristic_string.writeValue(tx_estring_value.c_str());
+    }
+    // reset the buffer
+    end_pt = 0;
+
+    break;
+}
+```
+
+In jupyter notebook, parse the received data to two lists:
+
+```python
+def parse_to_time_temp(ss):
+    result = ss.split('|')
+    time_ms = result[0]
+    temperature = result[1]
+    time_stamps.append(time_ms)
+    temperatures.append(temperature)
+    print(f"time (ms): {time_ms}   temp (F): {temperature}")
+```
+
+Some of the temperature data:
+
+```
+time (ms): 691528   temp (F): 68.990
+time (ms): 692029   temp (F): 72.865
+time (ms): 692530   temp (F): 69.571
+time (ms): 693031   temp (F): 70.23
+time (ms): 693534   temp (F): 68.602
+time (ms): 694035   temp (F): 70.23
+time (ms): 694536   temp (F): 69.54
+time (ms): 695037   temp (F): 69.765
+time (ms): 695538   temp (F): 69.571
+time (ms): 696039   temp (F): 69.829
+time (ms): 696540   temp (F): 69.54
+time (ms): 697041   temp (F): 69.700
+time (ms): 697542   temp (F): 69.442
+time (ms): 698043   temp (F): 69.765
+time (ms): 698545   temp (F): 68.990
+time (ms): 699046   temp (F): 68.667
+time (ms): 699547   temp (F): 70.411
+```
+
+### 2.7
+
+> Discuss the differences between these two methods, the advantages and disadvantages of both and the potential scenarios that you might choose one method over the other. How “quickly” can the second method record data? The Artemis board has 384 kB of RAM. Approximately how much data can you store to send without running out of memory?
+
+The efficiency of the first method is lower than the second method, because it has to wait the previous message to be sent before sending the next message, causing delay in data transmission.
+
+The second method can record data to the highest speed.
+
+1 int consumes 4B space, 1 float consumes 4B
+
+384 kB / 8B = 48k
+
+So the largest data buffer length is 48k.
+
+### Additional tasks for 5000-level students
+
+### 1
+
+> **Effective Data Rate And Overhead**: Send a message from the computer and receive a reply from the Artemis board. Note the respective times for each event, calculate the data rate for 5-byte replies and 120-byte replies. Do many short packets introduce a lot of overhead? Do larger replies help to reduce overhead? You may also test additional reply sizes. Please include at least one plot to support your write-up.
+
+```python
+start_time = time.time() * 1000
+
+for len in [5, 10, 20, 40, 80, 120, 240]:
+    print(f"msg len = {len}")
+    avg_rrt = 0
+    for i in range(20):
+        send_time = time.time() * 1000
+        ble.send_command(CMD.GET_REPLY_LEN, len)
+        s = ble.receive_string(ble.uuid['RX_STRING'])
+        recv_time = time.time() * 1000
+        
+        rrt = recv_time - send_time
+        avg_rrt += rrt
+        # print(rrt)
+        
+    avg_rrt /= 20
+    print(f"avg rrt = {avg_rrt}\n")
+```
+
+Result:
+
+```
+msg len = 5
+avg rrt = 118.93128662109375
+
+msg len = 10
+avg rrt = 119.98502197265626
+
+msg len = 20
+avg rrt = 119.98466796875
+
+msg len = 40
+avg rrt = 120.075537109375
+
+msg len = 80
+avg rrt = 121.49056396484374
+
+msg len = 120
+avg rrt = 124.49266357421875
+
+msg len = 240
+avg rrt = 121.423779296875
+```
+
+![chart](/FastRobots/images/Lab1/chart.png)
+
+Large replies doesnot reduce overhead significantly.
+
+### 2
+
+> **Reliability**: What happens when you send data at a higher rate from the robot to the computer? Does the computer read all the data published (without missing anything) from the Artemis board? Include your answer in the write-up.
+
+If data was sent too fast, the buffer of the bluetooth receiver may be overflowed and some data will be discarded. So some of the data will be missed.
+
+## Discussion
+
+> Briefly describe what you’ve learned, challenges that you faced, and/or any unique solutions used to fix problems. It is important to keep these writeups succinct. You will not get extra points for writing more words if the content doesn’t contribute to communicating your understanding of the lab material.
+
+1. The compiling process on M1 Mac is extremely slow and requires patience.
+
+2. The communication rate between computer and ble is important, they need to match each other.
+
+3. If not set the uuid properly, python program on my computer may connect to some other's ble device.
+
+4. Jupyter notebook is hard to manipulate in some scenarios. Many of its control logic differs from normal python script.
