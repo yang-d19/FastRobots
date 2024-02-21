@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lab2 | Fast Robots 2024 Spring</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Lab2" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Lab 2" />
+<meta property="og:description" content="Lab 2" />
+<link rel="canonical" href="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html" />
+<meta property="og:url" content="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html" />
+<meta property="og:site_name" content="Fast Robots 2024 Spring" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-02-20T23:46:21-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lab2" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-02-20T23:46:21-05:00","datePublished":"2024-02-20T23:46:21-05:00","description":"Lab 2","headline":"Lab2","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FastRobots/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FastRobots/feed.xml" title="Fast Robots 2024 Spring" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FastRobots/">Fast Robots 2024 Spring</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FastRobots/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lab2</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-02-20T23:46:21-05:00" itemprop="datePublished">Feb 20, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="lab-2">Lab 2</h1>
+
+<h2 id="setup-the-imu">Setup the IMU</h2>
+
+<h3 id="1-picture-of-your-artemis-imu-connections">1. Picture of your Artemis IMU connections</h3>
+
+<p><img src="/FastRobots/images/Lab2/imu connection.jpg" alt="imu connection" style="zoom: 15%;" /></p>
+
+<h3 id="2-show-that-the-imu-example-code-works">2. Show that the IMU example code works</h3>
+
+<p>I add the LED blink when Artemis power on.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// Blink the LED 3 times slowly on start up</span>
+  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BUILTIN</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>  
+    <span class="n">delay</span><span class="p">(</span><span class="mi">800</span><span class="p">);</span>
+    <span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BUILTIN</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>  
+    <span class="n">delay</span><span class="p">(</span><span class="mi">800</span><span class="p">);</span>
+    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="3-ad0_val-definition-discussion">3. AD0_VAL definition discussion</h3>
+
+<p>According to the description in the <code class="language-plaintext highlighter-rouge">IMU_Example.ino</code> : “On the SparkFun 9DoF IMU breakout the default is 1, and when the ADR jumper is closed the value becomes 0”. However, we can’t read the data from IMU when <code class="language-plaintext highlighter-rouge">AD0_VAL</code> is set to the default value 1, which throws the message:</p>
+
+<p><img src="/FastRobots/images/Lab2/data underflow.png" alt="data underflow" style="zoom:50%;" /></p>
+
+<p>When modified that value to 0, the data from IMU can now be read normally.</p>
+
+<h3 id="4-acceleration-and-gyroscope-data-discussion">4. Acceleration and gyroscope data discussion</h3>
+
+<p>The gyroscope data is close to zero when holding still. Gyro data for a given axis increases when rotating around the axis.</p>
+
+<h2 id="accelerometer">Accelerometer</h2>
+
+<h3 id="1-image-of-output-at--90-0-90-degrees-for-pitch-and-roll-include-equations">1. Image of output at {-90, 0, 90} degrees for pitch and roll (include equations)</h3>
+
+<p>I add two functions:</p>
+
+<p><code class="language-plaintext highlighter-rouge">convert2Attitude</code> converts the raw accelerometer data  to pitch and roll angle.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">convert2Attitude</span><span class="p">(</span><span class="n">ICM_20948_I2C</span> <span class="o">*</span><span class="n">sensor</span><span class="p">,</span> <span class="n">Attitude</span><span class="o">*</span> <span class="n">att</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">pitch_rad</span> <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sensor</span><span class="o">-&gt;</span><span class="n">accX</span><span class="p">(),</span> <span class="o">-</span><span class="n">sensor</span><span class="o">-&gt;</span><span class="n">accZ</span><span class="p">());</span>
+  <span class="kt">float</span> <span class="n">roll_rad</span> <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sensor</span><span class="o">-&gt;</span><span class="n">accY</span><span class="p">(),</span> <span class="o">-</span><span class="n">sensor</span><span class="o">-&gt;</span><span class="n">accZ</span><span class="p">());</span>
+  <span class="n">att</span><span class="o">-&gt;</span><span class="n">pitch</span> <span class="o">=</span> <span class="n">pitch_rad</span> <span class="o">*</span> <span class="mi">180</span><span class="p">.</span><span class="mi">0</span> <span class="o">/</span> <span class="n">M_PI</span><span class="p">;</span>
+  <span class="n">att</span><span class="o">-&gt;</span><span class="n">roll</span> <span class="o">=</span> <span class="n">roll_rad</span> <span class="o">*</span> <span class="mi">180</span><span class="p">.</span><span class="mi">0</span> <span class="o">/</span> <span class="n">M_PI</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">printAttitude</code> prints formatted attitude values.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">printAttitude</span><span class="p">(</span><span class="n">Attitude</span> <span class="o">*</span><span class="n">att</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">SERIAL_PORT</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Pitch [ "</span><span class="p">);</span>
+  <span class="n">printFormattedFloat</span><span class="p">(</span><span class="n">att</span><span class="o">-&gt;</span><span class="n">pitch</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="n">SERIAL_PORT</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">" ], Roll [ "</span><span class="p">);</span>
+  <span class="n">printFormattedFloat</span><span class="p">(</span><span class="n">att</span><span class="o">-&gt;</span><span class="n">roll</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="n">SERIAL_PORT</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">" ]"</span><span class="p">);</span>
+  <span class="n">SERIAL_PORT</span><span class="p">.</span><span class="n">println</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>0 degree pitch &amp; roll</li>
+</ul>
+
+<p><img src="/FastRobots/images/Lab2/0 pitch and roll.png" alt="0 pitch and roll" style="zoom:50%;" /></p>
+
+<ul>
+  <li>90 degrees pitch</li>
+</ul>
+
+<p><img src="/FastRobots/images/Lab2/pitch 90.png" alt="pitch 90" style="zoom:50%;" /></p>
+
+<ul>
+  <li>-90 degrees pitch</li>
+</ul>
+
+<p><img src="/FastRobots/images/Lab2/pitch -90.png" alt="pitch -90" style="zoom:50%;" /></p>
+
+<ul>
+  <li>90 degrees roll</li>
+</ul>
+
+<p><img src="/FastRobots/images/Lab2/roll 90.png" alt="roll 90" style="zoom:50%;" /></p>
+
+<ul>
+  <li>-90 degrees roll</li>
+</ul>
+
+<p><img src="/FastRobots/images/Lab2/roll -90.png" alt="roll -90" style="zoom:50%;" /></p>
+
+<h3 id="2-accelerometer-accuracy-discussion">2. Accelerometer accuracy discussion</h3>
+
+<p>The pitch and roll data calculated by accelerometer data has large noise, it vibrates a lot even when the IMU is hold still.</p>
+
+<p><img src="/FastRobots/images/Lab2/serial plot for accel.png" alt="serial plot for accel" style="zoom: 33%;" /></p>
+
+<h3 id="3-noise-in-the-frequency-spectrum-analysis">3. Noise in the frequency spectrum analysis</h3>
+
+<h4 id="a-include-graphs-for-your-fourier-transform">(a) Include graphs for your fourier transform</h4>
+
+<p><img src="/FastRobots/images/Lab2/pitch roll fft.png" alt="pitch roll fft" style="zoom: 45%;" /></p>
+
+<h4 id="b-discuss-the-results">(b) Discuss the results</h4>
+
+<p>There exists a lot of high frequency noise in the accelerometer data. However, we can only operate the car in a relatively low frequency, for example, no more than 10Hz. So a low pass filter is needed.</p>
+
+<h2 id="gyroscope">Gyroscope</h2>
+
+<h3 id="1-include-documentation-for-pitch-roll-and-yaw-with-images-of-the-results-of-different-imu-positions">1. Include documentation for pitch, roll, and yaw with images of the results of different IMU positions</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">myICM</span><span class="p">.</span><span class="n">dataReady</span><span class="p">())</span>
+    <span class="p">{</span>
+        <span class="n">prev_time</span> <span class="o">=</span> <span class="n">curr_time</span><span class="p">;</span>
+        <span class="n">curr_time</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
+
+        <span class="p">...</span>
+
+        <span class="kt">float</span> <span class="n">gyr_x</span> <span class="o">=</span> <span class="n">myICM</span><span class="p">.</span><span class="n">gyrX</span><span class="p">();</span>
+        <span class="n">att</span><span class="p">.</span><span class="n">roll</span> <span class="o">-=</span> <span class="n">gyr_x</span> <span class="o">*</span> <span class="p">(</span><span class="n">curr_time</span> <span class="o">-</span> <span class="n">prev_time</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="n">gyr_y</span> <span class="o">=</span> <span class="n">myICM</span><span class="p">.</span><span class="n">gyrY</span><span class="p">();</span>
+        <span class="n">att</span><span class="p">.</span><span class="n">pitch</span> <span class="o">-=</span> <span class="n">gyr_y</span> <span class="o">*</span> <span class="p">(</span><span class="n">curr_time</span> <span class="o">-</span> <span class="n">prev_time</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="n">gyr_z</span> <span class="o">=</span> <span class="n">myICM</span><span class="p">.</span><span class="n">gyrZ</span><span class="p">();</span>
+        <span class="n">att</span><span class="p">.</span><span class="n">yaw</span> <span class="o">-=</span> <span class="n">gyr_z</span> <span class="o">*</span> <span class="p">(</span><span class="n">curr_time</span> <span class="o">-</span> <span class="n">prev_time</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+
+        <span class="n">printAttitude</span><span class="p">(</span><span class="o">&amp;</span><span class="n">att</span><span class="p">);</span>
+
+    <span class="p">}</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The serial plotter shows the curve of the angular data calculated by gyroscope.</p>
+
+<p><img src="/FastRobots/images/Lab2/seiral plot for gyro.png" alt="seiral plot for gyro" style="zoom: 33%;" /></p>
+
+<p>The angular data calculated by gyroscope has less noise but will drift over time.</p>
+
+<h3 id="2-demonstrate-the-accuracy-and-range-of-the-complementary-filter-and-discuss-any-design-choices">2. Demonstrate the accuracy and range of the complementary filter, and discuss any design choices</h3>
+
+<p><img src="/FastRobots/images/Lab2/serial compl.png" alt="serial compl" style="zoom: 33%;" /></p>
+
+<p>Complementary filter has less noise than pure accelerometer data, and will not drift over time like pure gyroscope data.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">att</span><span class="p">.</span><span class="n">roll</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">att</span><span class="p">.</span><span class="n">roll</span> <span class="o">+</span> <span class="n">gyr_x</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">acc_x</span><span class="p">;</span>
+<span class="n">att</span><span class="p">.</span><span class="n">pitch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">att</span><span class="p">.</span><span class="n">pitch</span> <span class="o">+</span> <span class="n">gyr_y</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">acc_y</span><span class="p">;</span>
+<span class="n">att</span><span class="p">.</span><span class="n">yaw</span> <span class="o">=</span> <span class="n">att</span><span class="p">.</span><span class="n">yaw</span> <span class="o">+</span> <span class="n">gyr_z</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>I choose the parameter alpha in complementary filter to be 0.01;</p>
+
+<h2 id="sample-data">Sample Data</h2>
+
+<h3 id="1-speed-of-sampling-discussion">1. Speed of sampling discussion</h3>
+
+<p>By removing all the delay() and Serial.print() statements in the code, the code can run at about 250Hz. By storing time stamp and sensor data in a buffer, the code can run even faster, at a frequency of 330Hz.</p>
+
+<p>This rapid sampling rate can lead to an accumulation of data within a short period of time. The data was organized as string arrays and transmitted to Jupyter through bluetooth.</p>
+
+<h3 id="2-demonstrate-collected-and-stored-time-stamped-imu-data-in-arrays">2. Demonstrate collected and stored time-stamped IMU data in arrays</h3>
+
+<p>The data stored in Arduino in this form, with buffer size 2000;</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">Attitude</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">roll</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">pitch</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">yaw</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">Attitude</span> <span class="n">att</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="kt">int</span> <span class="n">buffer_size</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">end_pt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">time_stamps</span><span class="p">[</span><span class="n">buffer_size</span><span class="p">];</span>
+<span class="n">Attitude</span> <span class="n">atts</span><span class="p">[</span><span class="n">buffer_size</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>The data stored in Jupyter has this form:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">parse_to_time_data</span><span class="p">(</span><span class="n">ss</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">|</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">time_ms</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">roll</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pitch</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">yaw</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">time_stamps</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">time_ms</span><span class="p">)</span>
+    <span class="n">roll_arr</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">roll</span><span class="p">)</span>
+    <span class="n">pitch_arr</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">pitch</span><span class="p">)</span>
+    <span class="n">yaw_arr</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">yaw</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="3-demonstrate-5s-of-imu-data-sent-over-bluetooth">3. Demonstrate 5s of IMU data sent over Bluetooth</h3>
+
+<p>Each IMU data frame haws 3 float variable and 1 int variable, which takes 14B space, the sample rate was set to about 300Hz, which takes 4.2KB/s. The Artemis has 384KB of RAM, so there is enough space for 5s of IMU data to be transmitted through Bluetooth.</p>
+
+<p><img src="/FastRobots/images/Lab2/ble-ts-data.png" alt="ble-ts-data" style="zoom:50%;" /></p>
+
+
+  </div><a class="u-url" href="/FastRobots/jekyll/update/2024/02/20/Lab2.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FastRobots/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fast Robots 2024 Spring</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Fast Robots 2024 Spring</li><li><a class="u-email" href="mailto:dy297@cornell.edu">dy297@cornell.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/yang-d19"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#github"></use></svg> <span class="username">yang-d19</span></a></li><li><a href="https://www.linkedin.com/in/ding-yang-829248219"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">ding-yang-829248219</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
