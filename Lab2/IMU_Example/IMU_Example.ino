@@ -33,11 +33,20 @@ ICM_20948_I2C myICM; // Otherwise create an ICM_20948_I2C object
 #endif
 
 struct Attitude {
-  float roll;
-  float pitch;
+  float roll = 0;
+  float pitch = 0;
+  float yaw = 0;
 };
 
 Attitude att;
+
+const int buffer_size = 2000;
+int end_pt = 0;
+int time_stamps[buffer_size];
+Attitude atts[buffer_size];
+
+int prev_time;
+int curr_time;
 
 void setup()
 {
@@ -88,22 +97,41 @@ void setup()
       initialized = true;
     }
   }
+
+  curr_time = millis();
 }
+
 
 void loop()
 {
 
   if (myICM.dataReady())
   {
+    prev_time = curr_time;
+    curr_time = millis();
+
     myICM.getAGMT();         // The values are only updated when you call 'getAGMT'
                              //    printRawAGMT( myICM.agmt );     // Uncomment this to see the raw values, taken directly from the agmt structure
     // printScaledAGMT(&myICM); // This function takes into account the scale settings from when the measurement was made to calculate the values with units
 
-    convert2Attitude(&myICM, &att);
+    convertAccel2Attitude(&myICM, &att);
+
+    // convertGyro2Attitude(&myICM, &att);
+
+    float gyr_x = myICM.gyrX();
+    att.roll -= gyr_x * (curr_time - prev_time) / 1000.0;
+
+    float gyr_y = myICM.gyrY();
+    att.pitch -= gyr_y * (curr_time - prev_time) / 1000.0;
+
+    float gyr_z = myICM.gyrZ();
+    att.yaw -= gyr_z * (curr_time - prev_time) / 1000.0;
 
     printAttitude(&att);
 
-    delay(30);
+    // store_ts_attitude(&att);
+
+    // delay(30);
   }
   else
   {
@@ -111,6 +139,16 @@ void loop()
     delay(500);
   }
 }
+
+// void store_ts_attitude(Attitude* att) {
+//   const int t = mills();
+//   if (end_pt < buffer_size) {
+//     time_stamps[end_pt] = t;
+//     atts[end_pt].pitch = att->pitch;
+//     atts[end_pt].roll = att->roll;
+//     end_pt++;
+//   }
+// }
 
 // Below here are some helper functions to print the data nicely!
 
@@ -226,18 +264,27 @@ void printFormattedFloat(float val, uint8_t leading, uint8_t decimals)
   }
 }
 
-void convert2Attitude(ICM_20948_I2C *sensor, Attitude* att) {
+void convertAccel2Attitude(ICM_20948_I2C *sensor, Attitude* att) {
   float pitch_rad = atan2(sensor->accX(), -sensor->accZ());
   float roll_rad = atan2(sensor->accY(), -sensor->accZ());
   att->pitch = pitch_rad * 180.0 / M_PI;
   att->roll = roll_rad * 180.0 / M_PI;
 }
 
+// void convertGyro2Attitude(ICM_20948_I2C *sensor, Attitude* att) {
+//   float gyr_x = sensor->gyrX();
+//   float roll_rad = atan2(sensor->accY(), -sensor->accZ());
+//   att->pitch = pitch_rad * 180.0 / M_PI;
+//   att->roll = roll_rad * 180.0 / M_PI;
+// }
+
 void printAttitude(Attitude *att) {
-  SERIAL_PORT.print("Attitude:  Pitch (degree) [ ");
+  SERIAL_PORT.print("Pitch [ ");
   printFormattedFloat(att->pitch, 3, 2);
-  SERIAL_PORT.print(" ], Roll (degree) [ ");
+  SERIAL_PORT.print(" ], Roll [ ");
   printFormattedFloat(att->roll, 3, 2);
+  SERIAL_PORT.print(" ], Yaw [ ");
+  printFormattedFloat(att->yaw, 3, 2);
   SERIAL_PORT.print(" ]");
   SERIAL_PORT.println();
 }
