@@ -1,10 +1,18 @@
+---
+layout: post
+title:  "Lab2"
+date:   2024-02-20 23:46:21 -0500
+categories: jekyll update
+---
+
+
 # Lab 2
 
 ## Setup the IMU
 
 ### 1. Picture of your Artemis IMU connections
 
-<img src="../images/Lab2/imu connection.jpg" alt="imu connection" style="zoom: 15%;" />
+<img src="/FastRobots/images/Lab2/imu connection.jpg" alt="imu connection" style="zoom: 15%;" />
 
 ### 2. Show that the IMU example code works
 
@@ -30,7 +38,7 @@ void setup()
 
 According to the description in the `IMU_Example.ino` : "On the SparkFun 9DoF IMU breakout the default is 1, and when the ADR jumper is closed the value becomes 0". However, we can't read the data from IMU when `AD0_VAL` is set to the default value 1, which throws the message:
 
-<img src="../images/Lab2/data underflow.png" alt="data underflow" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/data underflow.png" alt="data underflow" style="zoom:50%;" />
 
 When modified that value to 0, the data from IMU can now be read normally.
 
@@ -70,35 +78,35 @@ void printAttitude(Attitude *att) {
 
 +   0 degree pitch & roll
 
-<img src="../images/Lab2/0 pitch and roll.png" alt="0 pitch and roll" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/0 pitch and roll.png" alt="0 pitch and roll" style="zoom:50%;" />
 
 +   90 degrees pitch
 
-<img src="../images/Lab2/pitch 90.png" alt="pitch 90" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/pitch 90.png" alt="pitch 90" style="zoom:50%;" />
 
 +   -90 degrees pitch
 
-<img src="../images/Lab2/pitch -90.png" alt="pitch -90" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/pitch -90.png" alt="pitch -90" style="zoom:50%;" />
 
 +   90 degrees roll
 
-<img src="../images/Lab2/roll 90.png" alt="roll 90" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/roll 90.png" alt="roll 90" style="zoom:50%;" />
 
 +   -90 degrees roll
 
-<img src="../images/Lab2/roll -90.png" alt="roll -90" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/roll -90.png" alt="roll -90" style="zoom:50%;" />
 
 ### 2. Accelerometer accuracy discussion
 
 The pitch and roll data calculated by accelerometer data has large noise, it vibrates a lot even when the IMU is hold still.
 
-<img src="../images/Lab2/serial plot for accel.png" alt="serial plot for accel" style="zoom: 33%;" />
+<img src="/FastRobots/images/Lab2/serial plot for accel.png" alt="serial plot for accel" style="zoom: 33%;" />
 
 ### 3. Noise in the frequency spectrum analysis
 
 #### (a) Include graphs for your fourier transform
 
-<img src="../images/Lab2/pitch roll fft.png" alt="pitch roll fft" style="zoom: 45%;" />
+<img src="/FastRobots/images/Lab2/pitch roll fft.png" alt="pitch roll fft" style="zoom: 45%;" />
 
 #### (b) Discuss the results
 
@@ -133,13 +141,13 @@ void loop() {
 
 The serial plotter shows the curve of the angular data calculated by gyroscope.
 
-<img src="../images/Lab2/seiral plot for gyro.png" alt="seiral plot for gyro" style="zoom: 33%;" />
+<img src="/FastRobots/images/Lab2/seiral plot for gyro.png" alt="seiral plot for gyro" style="zoom: 33%;" />
 
 The angular data calculated by gyroscope has less noise but will drift over time.
 
 ### 2. Demonstrate the accuracy and range of the complementary filter, and discuss any design choices
 
-<img src="../images/Lab2/serial compl.png" alt="serial compl" style="zoom: 33%;" />
+<img src="/FastRobots/images/Lab2/serial compl.png" alt="serial compl" style="zoom: 33%;" />
 
 Complementary filter has less noise than pure accelerometer data, and will not drift over time like pure gyroscope data.
 
@@ -199,5 +207,5 @@ Each IMU data frame haws 3 float variable and 1 int variable, which takes 14B sp
 
 
 
-<img src="../images/Lab2/ble-ts-data.png" alt="ble-ts-data" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab2/ble-ts-data.png" alt="ble-ts-data" style="zoom:50%;" />
 

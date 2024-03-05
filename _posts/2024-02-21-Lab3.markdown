@@ -1,0 +1,62 @@
+---
+layout: post
+title:  "Lab3"
+categories: jekyll update
+---
+
+# Lab3
+
+## Prelab
+
+### 1. Note the I2C sensor address
+
+
+
+### 2. **Briefly** discuss the approach to using 2 ToF sensors
+
+
+
+### 3. **Briefly** discuss placement of sensors on robot and scenarios where you will miss obstacles
+
+
+
+### 4. Sketch of wiring diagram
+
+
+
+## Lab Tasks
+
+### 1. Picture of your ToF sensor connected to your QWIIC breakout board
+
+
+
+### 2. Screenshot of Artemis scanning for I2C device (and discussion on I2C address)
+
+
+
+### 3. Discussion and pictures of sensor data with chosen mode
+
+
+
+### 4. 2 ToF sensors: Discussion and screenshot of sensors working in parallel
+
+
+
+### 5. Tof sensor speed: Discussion on speed and limiting factor; include code snippet of how you do this
+
+
+
+### 6. Time v Distance: Include graph of data sent over bluetooth (2 sensors)
+
+
+
+### 7. Discussion on infrared transmission based sensors
+
+
+
+### 8. Sensitivity of sensors to colors and textures
+
+
+
+
+
