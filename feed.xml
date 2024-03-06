@@ -1,4 +1,138 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-02-21T08:25:54-05:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab3</title><link href="http://localhost:4000/FastRobots/2024/02/21/Lab3.html" rel="alternate" type="text/html" title="Lab3" /><published>2024-02-21T00:00:00-05:00</published><updated>2024-02-21T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/2024/02/21/Lab3</id><content type="html" xml:base="http://localhost:4000/FastRobots/2024/02/21/Lab3.html"><![CDATA[]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Lab2</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html" rel="alternate" type="text/html" title="Lab2" /><published>2024-02-20T23:46:21-05:00</published><updated>2024-02-20T23:46:21-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html"><![CDATA[<h1 id="lab-2">Lab 2</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-03-06T05:15:44-05:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab4</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" rel="alternate" type="text/html" title="Lab4" /><published>2024-03-05T00:00:00-05:00</published><updated>2024-03-05T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"><![CDATA[<h1 id="lab4">Lab4</h1>
+
+<h2 id="prelab">Prelab</h2>
+
+<h3 id="1-diagram-with-your-intended-connections-between-the-motor-drivers-artemis-and-battery-with-specific-pin-numbers">1. Diagram with your intended connections between the motor drivers, Artemis, and battery (with specific pin numbers)</h3>
+
+<p><img src="/FastRobots/images/Lab4/wire.jpg" alt="wire" /></p>
+
+<h3 id="2-battery-discussion">2. Battery discussion</h3>
+
+<p>We use seperate batteries to power artemis and the motors in order to reduce EMI between controller and actuator.</p>
+
+<h2 id="lab-tasks">Lab Tasks</h2>
+
+<h3 id="1-picture-of-your-setup-with-power-supply-and-oscilloscope-hookup">1. Picture of your setup with power supply and oscilloscope hookup</h3>
+
+<p>Picture of power supply:</p>
+
+<p><img src="/FastRobots/images/Lab4/dc.jpg" alt="dc" style="zoom:33%;" /></p>
+
+<p>Oscilloscope hookup:</p>
+
+<p><img src="/FastRobots/images/Lab4/spin.jpg" alt="spin" style="zoom:33%;" /></p>
+
+<h3 id="2-power-supply-setting-discussion">2. Power supply setting discussion</h3>
+
+<p>I use the voltage generator to ouput 3.7V DC power supply to the motor drivers, in order to keep the same as batteries.</p>
+
+<h3 id="3-include-the-code-snippet-for-your-analogwrite-code-that-tests-the-motor-drivers">3. Include the code snippet for your analogWrite code that tests the motor drivers</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// go straight</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">35</span><span class="p">);</span>
+
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">60</span><span class="p">);</span>
+  <span class="n">delay</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="4-image-of-your-oscilloscope">4. Image of your oscilloscope</h3>
+
+<p><img src="/FastRobots/images/Lab4/osci.jpg" alt="osci" /></p>
+
+<p>video when adjusting pwm output:</p>
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/WrhX-cahByo" title="Fast robot lab4 - adjust pwm output" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="5-short-video-of-wheels-spinning-as-expected-including-code-snippet-its-running-on">5. Short video of wheels spinning as expected (including code snippet it’s running on)</h3>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fkLowDbxA-E?si=F_uwzXzWtdyvDwg-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="6-short-video-of-both-wheels-spinning-with-battery-driving-the-motor-drivers">6. Short video of both wheels spinning (with battery driving the motor drivers)</h3>
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/CKZCbataMDc" title="Fast robot lab4 - power on battery" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="7-picture-of-all-the-components-secured-in-the-car">7. Picture of all the components secured in the car</h3>
+
+<p><img src="/FastRobots/images/Lab4/comp.jpg" alt="comp" style="zoom:50%;" /></p>
+
+<h3 id="8-lower-limit-pwm-value-discussion">8. Lower limit PWM value discussion</h3>
+
+<h3 id="9-calibration-demonstration-discussion-video-code-pictures-as-needed">9. Calibration demonstration (discussion, video, code, pictures as needed)</h3>
+
+<h3 id="10-open-loop-code-and-video">10. Open loop code and video</h3>
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/shiN0Y1AhcQ" title="Fast robot lab4 - car go straight" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="11-5000-analogwrite-frequency-discussion-include-screenshots-and-code">11. (5000) analogWrite frequency discussion (include screenshots and code)</h3>
+
+<p>The frequency of analogWrite is fast enough for the motors.</p>
+
+<p>Manually configuring timers to generate a faster PWM signal can:</p>
+
+<ol>
+  <li>spare more resource for CPU to carray out other time consuming tasks</li>
+  <li>increase the control accuracy for motors</li>
+</ol>
+
+<h3 id="12-5000-lowest-pwm-value-speed-once-in-motion-discussion-include-videos-where-appropriate">12. (5000) Lowest PWM value speed (once in motion) discussion (include videos where appropriate)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Condition</th>
+      <th>Left Motor</th>
+      <th>Right Motor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>start from rest</td>
+      <td>28</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>move when running</td>
+      <td>24</td>
+      <td>45</td>
+    </tr>
+  </tbody>
+</table>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Lab4]]></summary></entry><entry><title type="html">Lab3</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3.html" rel="alternate" type="text/html" title="Lab3" /><published>2024-02-21T00:00:00-05:00</published><updated>2024-02-21T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3.html"><![CDATA[<h1 id="lab3">Lab3</h1>
+
+<h2 id="prelab">Prelab</h2>
+
+<h3 id="1-note-the-i2c-sensor-address">1. Note the I2C sensor address</h3>
+
+<p><img src="../images/Lab3/i2c addr of ToF sensor.png" alt="i2c addr of ToF sensor" style="zoom:50%;" /></p>
+
+<p>The I2C sensor address if 0x29</p>
+
+<h3 id="2-briefly-discuss-the-approach-to-using-2-tof-sensors">2. <strong>Briefly</strong> discuss the approach to using 2 ToF sensors</h3>
+
+<h3 id="3-briefly-discuss-placement-of-sensors-on-robot-and-scenarios-where-you-will-miss-obstacles">3. <strong>Briefly</strong> discuss placement of sensors on robot and scenarios where you will miss obstacles</h3>
+
+<h3 id="4-sketch-of-wiring-diagram">4. Sketch of wiring diagram</h3>
+
+<h2 id="lab-tasks">Lab Tasks</h2>
+
+<h3 id="1-picture-of-your-tof-sensor-connected-to-your-qwiic-breakout-board">1. Picture of your ToF sensor connected to your QWIIC breakout board</h3>
+
+<h3 id="2-screenshot-of-artemis-scanning-for-i2c-device-and-discussion-on-i2c-address">2. Screenshot of Artemis scanning for I2C device (and discussion on I2C address)</h3>
+
+<h3 id="3-discussion-and-pictures-of-sensor-data-with-chosen-mode">3. Discussion and pictures of sensor data with chosen mode</h3>
+
+<h3 id="4-2-tof-sensors-discussion-and-screenshot-of-sensors-working-in-parallel">4. 2 ToF sensors: Discussion and screenshot of sensors working in parallel</h3>
+
+<h3 id="5-tof-sensor-speed-discussion-on-speed-and-limiting-factor-include-code-snippet-of-how-you-do-this">5. Tof sensor speed: Discussion on speed and limiting factor; include code snippet of how you do this</h3>
+
+<h3 id="6-time-v-distance-include-graph-of-data-sent-over-bluetooth-2-sensors">6. Time v Distance: Include graph of data sent over bluetooth (2 sensors)</h3>
+
+<h3 id="7-5000-discussion-on-infrared-transmission-based-sensors">7. (5000) Discussion on infrared transmission based sensors</h3>
+
+<h3 id="8-5000-sensitivity-of-sensors-to-colors-and-textures">8. (5000) Sensitivity of sensors to colors and textures</h3>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Lab3]]></summary></entry><entry><title type="html">Lab2</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html" rel="alternate" type="text/html" title="Lab2" /><published>2024-02-20T23:46:21-05:00</published><updated>2024-02-20T23:46:21-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html"><![CDATA[<h1 id="lab-2">Lab 2</h1>
 
 <h2 id="setup-the-imu">Setup the IMU</h2>
 

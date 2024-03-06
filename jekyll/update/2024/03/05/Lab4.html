@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lab4 | Fast Robots 2024 Spring</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Lab4" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Lab4" />
+<meta property="og:description" content="Lab4" />
+<link rel="canonical" href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" />
+<meta property="og:url" content="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" />
+<meta property="og:site_name" content="Fast Robots 2024 Spring" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-03-05T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lab4" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-03-05T00:00:00-05:00","datePublished":"2024-03-05T00:00:00-05:00","description":"Lab4","headline":"Lab4","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FastRobots/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FastRobots/feed.xml" title="Fast Robots 2024 Spring" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FastRobots/">Fast Robots 2024 Spring</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FastRobots/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lab4</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-03-05T00:00:00-05:00" itemprop="datePublished">Mar 5, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="lab4">Lab4</h1>
+
+<h2 id="prelab">Prelab</h2>
+
+<h3 id="1-diagram-with-your-intended-connections-between-the-motor-drivers-artemis-and-battery-with-specific-pin-numbers">1. Diagram with your intended connections between the motor drivers, Artemis, and battery (with specific pin numbers)</h3>
+
+<p><img src="/FastRobots/images/Lab4/wire.jpg" alt="wire" /></p>
+
+<h3 id="2-battery-discussion">2. Battery discussion</h3>
+
+<p>We use seperate batteries to power artemis and the motors in order to reduce EMI between controller and actuator.</p>
+
+<h2 id="lab-tasks">Lab Tasks</h2>
+
+<h3 id="1-picture-of-your-setup-with-power-supply-and-oscilloscope-hookup">1. Picture of your setup with power supply and oscilloscope hookup</h3>
+
+<p>Picture of power supply:</p>
+
+<p><img src="/FastRobots/images/Lab4/dc.jpg" alt="dc" style="zoom:33%;" /></p>
+
+<p>Oscilloscope hookup:</p>
+
+<p><img src="/FastRobots/images/Lab4/spin.jpg" alt="spin" style="zoom:33%;" /></p>
+
+<h3 id="2-power-supply-setting-discussion">2. Power supply setting discussion</h3>
+
+<p>I use the voltage generator to ouput 3.7V DC power supply to the motor drivers, in order to keep the same as batteries.</p>
+
+<h3 id="3-include-the-code-snippet-for-your-analogwrite-code-that-tests-the-motor-drivers">3. Include the code snippet for your analogWrite code that tests the motor drivers</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// go straight</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">35</span><span class="p">);</span>
+
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">60</span><span class="p">);</span>
+  <span class="n">delay</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="4-image-of-your-oscilloscope">4. Image of your oscilloscope</h3>
+
+<p><img src="/FastRobots/images/Lab4/osci.jpg" alt="osci" /></p>
+
+<p>video when adjusting pwm output:</p>
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/WrhX-cahByo" title="Fast robot lab4 - adjust pwm output" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="5-short-video-of-wheels-spinning-as-expected-including-code-snippet-its-running-on">5. Short video of wheels spinning as expected (including code snippet it’s running on)</h3>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fkLowDbxA-E?si=F_uwzXzWtdyvDwg-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="6-short-video-of-both-wheels-spinning-with-battery-driving-the-motor-drivers">6. Short video of both wheels spinning (with battery driving the motor drivers)</h3>
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/CKZCbataMDc" title="Fast robot lab4 - power on battery" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="7-picture-of-all-the-components-secured-in-the-car">7. Picture of all the components secured in the car</h3>
+
+<p><img src="/FastRobots/images/Lab4/comp.jpg" alt="comp" style="zoom:50%;" /></p>
+
+<h3 id="8-lower-limit-pwm-value-discussion">8. Lower limit PWM value discussion</h3>
+
+<h3 id="9-calibration-demonstration-discussion-video-code-pictures-as-needed">9. Calibration demonstration (discussion, video, code, pictures as needed)</h3>
+
+<h3 id="10-open-loop-code-and-video">10. Open loop code and video</h3>
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/shiN0Y1AhcQ" title="Fast robot lab4 - car go straight" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="11-5000-analogwrite-frequency-discussion-include-screenshots-and-code">11. (5000) analogWrite frequency discussion (include screenshots and code)</h3>
+
+<p>The frequency of analogWrite is fast enough for the motors.</p>
+
+<p>Manually configuring timers to generate a faster PWM signal can:</p>
+
+<ol>
+  <li>spare more resource for CPU to carray out other time consuming tasks</li>
+  <li>increase the control accuracy for motors</li>
+</ol>
+
+<h3 id="12-5000-lowest-pwm-value-speed-once-in-motion-discussion-include-videos-where-appropriate">12. (5000) Lowest PWM value speed (once in motion) discussion (include videos where appropriate)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Condition</th>
+      <th>Left Motor</th>
+      <th>Right Motor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>start from rest</td>
+      <td>28</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>move when running</td>
+      <td>24</td>
+      <td>45</td>
+    </tr>
+  </tbody>
+</table>
+
+
+  </div><a class="u-url" href="/FastRobots/jekyll/update/2024/03/05/Lab4.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FastRobots/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fast Robots 2024 Spring</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Fast Robots 2024 Spring</li><li><a class="u-email" href="mailto:dy297@cornell.edu">dy297@cornell.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/yang-d19"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#github"></use></svg> <span class="username">yang-d19</span></a></li><li><a href="https://www.linkedin.com/in/ding-yang-829248219"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">ding-yang-829248219</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
