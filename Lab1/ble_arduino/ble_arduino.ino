@@ -285,8 +285,8 @@ void handle_command() {
             }
             // reset the buffer
             end_pt = 0;
-
             break;
+
         }
         
         /* 

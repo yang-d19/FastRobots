@@ -1,0 +1,17 @@
+#line 1 "/Users/yangd19/Documents/Code/ECE5160-Code/Lab5/lab5-main/.vscode/settings.json"
+{
+    "files.associations": {
+        "functional": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "*.tpp": "cpp",
+        "*.tcc": "cpp",
+        "regex": "cpp"
+    }
+}

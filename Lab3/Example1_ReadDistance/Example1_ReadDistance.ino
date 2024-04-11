@@ -20,7 +20,9 @@
 #define SHUTDOWN_PIN 2
 #define INTERRUPT_PIN 3
 
-SFEVL53L1X distanceSensor;
+SFEVL53L1X distanceSensor1;
+SFEVL53L1X distanceSensor2;
+
 //Uncomment the following line to use the optional shutdown and interrupt pins.
 //SFEVL53L1X distanceSensor(Wire, SHUTDOWN_PIN, INTERRUPT_PIN);
 
@@ -31,40 +33,58 @@ void setup(void)
   Serial.begin(115200);
   Serial.println("VL53L1X Qwiic Test");
 
-  if (distanceSensor.begin() != 0) //Begin returns 0 on a good init
+  if (distanceSensor1.begin() != 0) //Begin returns 0 on a good init
   {
-    Serial.println("Sensor failed to begin. Please check wiring. Freezing...");
+    Serial.println("Sensor1 failed to begin. Please check wiring. Freezing...");
     while (1)
       ;
   }
-  Serial.println("Sensor online!");
 
-  distanceSensor.setDistanceModeShort();
+  Serial.println("Sensor1 online!");
 
-  //Get the distance mode, returns 1 for short and 2 for long
-  int mode = distanceSensor.getDistanceMode();
-  Serial.printf("Sensor Mode: %d\n", mode);
+  Serial.printf("old sensor1 i2c addr: %d\n", distanceSensor1.getI2CAddress()); // 82
+
+  distanceSensor1.setI2CAddress(80);
+  Serial.printf("sensor1 i2c addr: %d\n", distanceSensor1.getI2CAddress());
+
+  if (distanceSensor2.begin() != 0) //Begin returns 0 on a good init
+  {
+    Serial.println("Sensor2 failed to begin. Please check wiring. Freezing...");
+    while (1)
+      ;
+  }
+
+  Serial.println("Sensor2 online!");
+
+  Serial.printf("sensor2 i2c addr: %d\n", distanceSensor2.getI2CAddress());
+
+  
+  // distanceSensor1.setDistanceModeShort();
+
+  // //Get the distance mode, returns 1 for short and 2 for long
+  // int mode = distanceSensor1.getDistanceMode();
+  // Serial.printf("Sensor Mode: %d\n", mode);
 }
 
 void loop(void)
 {
-  distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
-  while (!distanceSensor.checkForDataReady())
-  {
-    delay(1);
-  }
-  int distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
-  distanceSensor.clearInterrupt();
-  distanceSensor.stopRanging();
+  // distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
+  // while (!distanceSensor.checkForDataReady())
+  // {
+  //   delay(1);
+  // }
+  // int distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+  // distanceSensor.clearInterrupt();
+  // distanceSensor.stopRanging();
 
-  Serial.print("Distance(mm): ");
-  Serial.print(distance);
+  // Serial.print("Distance(mm): ");
+  // Serial.print(distance);
 
-  float distanceInches = distance * 0.0393701;
-  float distanceFeet = distanceInches / 12.0;
+  // float distanceInches = distance * 0.0393701;
+  // float distanceFeet = distanceInches / 12.0;
 
-  Serial.print("\tDistance(ft): ");
-  Serial.print(distanceFeet, 2);
+  // Serial.print("\tDistance(ft): ");
+  // Serial.print(distanceFeet, 2);
 
-  Serial.println();
+  // Serial.println();
 }
