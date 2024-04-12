@@ -1,0 +1,106 @@
+---
+layout: post
+title:  "Lab4"
+categories: jekyll update
+---
+
+## Prelab
+
+### 1. Diagram with your intended connections between the motor drivers, Artemis, and battery (with specific pin numbers)
+
+![wire](/FastRobots/images/Lab4/wire.jpg)
+
+### 2. Battery discussion
+
+We use seperate batteries to power artemis and the motors in order to reduce EMI between controller and actuator.
+
+## Lab Tasks
+
+### 1. Picture of your setup with power supply and oscilloscope hookup
+
+Picture of power supply:
+
+<img src="/FastRobots/images/Lab4/dc.jpg" alt="dc" style="zoom:33%;" />
+
+Oscilloscope hookup:
+
+<img src="/FastRobots/images/Lab4/spin.jpg" alt="spin" style="zoom:33%;" />
+
+### 2. Power supply setting discussion
+
+I use the voltage generator to ouput 3.7V DC power supply to the motor drivers, in order to keep the same as batteries.
+
+### 3. Include the code snippet for your analogWrite code that tests the motor drivers
+
+```c
+void loop() {
+  // go straight
+  analogWrite(6, 0);
+  analogWrite(7, 35);
+
+  analogWrite(11, 0);
+  analogWrite(12, 60);
+  delay(1);
+}
+```
+
+### 4. Image of your oscilloscope
+
+![osci](/FastRobots/images/Lab4/osci.jpg)
+
+video when adjusting pwm output:
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/WrhX-cahByo" title="Fast robot lab4 - adjust pwm output" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### 5. Short video of wheels spinning as expected (including code snippet it’s running on)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fkLowDbxA-E?si=F_uwzXzWtdyvDwg-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### 6. Short video of both wheels spinning (with battery driving the motor drivers)
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/CKZCbataMDc" title="Fast robot lab4 - power on battery" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### 7. Picture of all the components secured in the car
+
+<img src="/FastRobots/images/Lab4/comp.jpg" alt="comp" style="zoom:50%;" />
+
+### 8. Lower limit PWM value discussion
+
+The lowest pwm value for left wheels is 50;
+
+The lowest pwm avalue for right wheels is 28.
+
+### 9. Calibration demonstration (discussion, video, code, pictures as needed)
+
+I use the code below to calibrate the original output (ranging from 0 ~ 1000) to the new output for pwm (ranging from 0 ~ 255)
+
+```c++
+int ctrl_pwm_map(int control, int ctrl_min, int ctrl_max, int pwm_min, int pwm_max) {
+  int pwm = (control - ctrl_min) * (pwm_max - pwm_min) / (ctrl_max - ctrl_min) + pwm_min;
+  return pwm;
+}
+
+left_pwm = ctrl_pwm_map(control, 0, 1000, 55, 255);
+right_pwm = ctrl_pwm_map(control, 0, 1000, 28, 255);
+```
+
+### 10. Open loop code and video
+
+<iframe width="467" height="830" src="https://www.youtube.com/embed/shiN0Y1AhcQ" title="Fast robot lab4 - car go straight" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### 11. (5000) analogWrite frequency discussion (include screenshots and code)
+
+The frequency of analogWrite is fast enough for the motors.
+
+Manually configuring timers to generate a faster PWM signal can:
+
+1. spare more resource for CPU to carray out other time consuming tasks
+2. increase the control accuracy for motors
+
+### 12. (5000) Lowest PWM value speed (once in motion) discussion (include videos where appropriate)
+
+| Condition         | Left Motor | Right Motor |
+| ----------------- | ---------- | ----------- |
+| start from rest   | 50         | 28          |
+| move when running | 45         | 24          |
+

@@ -10,7 +10,9 @@ categories: jekyll update
 
 ### 1. Note the I2C sensor address
 
+<img src="../images/Lab3/i2c addr of ToF sensor.png" alt="i2c addr of ToF sensor" style="zoom:50%;" />
 
+The I2C sensor address if 0x29
 
 ### 2. **Briefly** discuss the approach to using 2 ToF sensors
 
@@ -50,11 +52,11 @@ categories: jekyll update
 
 
 
-### 7. Discussion on infrared transmission based sensors
+### 7. (5000) Discussion on infrared transmission based sensors
 
 
 
-### 8. Sensitivity of sensors to colors and textures
+### 8. (5000) Sensitivity of sensors to colors and textures
 
 
 
