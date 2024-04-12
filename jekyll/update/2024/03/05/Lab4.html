@@ -7,8 +7,8 @@
 <meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="Lab4" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Lab4" />
-<meta property="og:description" content="Lab4" />
+<meta name="description" content="Prelab" />
+<meta property="og:description" content="Prelab" />
 <link rel="canonical" href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" />
 <meta property="og:url" content="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" />
 <meta property="og:site_name" content="Fast Robots 2024 Spring" />
@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Lab4" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-03-05T00:00:00-05:00","datePublished":"2024-03-05T00:00:00-05:00","description":"Lab4","headline":"Lab4","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-03-05T00:00:00-05:00","datePublished":"2024-03-05T00:00:00-05:00","description":"Prelab","headline":"Lab4","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/FastRobots/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FastRobots/feed.xml" title="Fast Robots 2024 Spring" /></head>
 <body><header class="site-header" role="banner">
@@ -47,9 +47,7 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <h1 id="lab4">Lab4</h1>
-
-<h2 id="prelab">Prelab</h2>
+    <h2 id="prelab">Prelab</h2>
 
 <h3 id="1-diagram-with-your-intended-connections-between-the-motor-drivers-artemis-and-battery-with-specific-pin-numbers">1. Diagram with your intended connections between the motor drivers, Artemis, and battery (with specific pin numbers)</h3>
 
@@ -110,7 +108,22 @@
 
 <h3 id="8-lower-limit-pwm-value-discussion">8. Lower limit PWM value discussion</h3>
 
+<p>The lowest pwm value for left wheels is 50;</p>
+
+<p>The lowest pwm avalue for right wheels is 28.</p>
+
 <h3 id="9-calibration-demonstration-discussion-video-code-pictures-as-needed">9. Calibration demonstration (discussion, video, code, pictures as needed)</h3>
+
+<p>I use the code below to calibrate the original output (ranging from 0 ~ 1000) to the new output for pwm (ranging from 0 ~ 255)</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">ctrl_pwm_map</span><span class="p">(</span><span class="kt">int</span> <span class="n">control</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ctrl_min</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ctrl_max</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pwm_min</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pwm_max</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">pwm</span> <span class="o">=</span> <span class="p">(</span><span class="n">control</span> <span class="o">-</span> <span class="n">ctrl_min</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pwm_max</span> <span class="o">-</span> <span class="n">pwm_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">ctrl_max</span> <span class="o">-</span> <span class="n">ctrl_min</span><span class="p">)</span> <span class="o">+</span> <span class="n">pwm_min</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">pwm</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">left_pwm</span> <span class="o">=</span> <span class="n">ctrl_pwm_map</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+<span class="n">right_pwm</span> <span class="o">=</span> <span class="n">ctrl_pwm_map</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+</code></pre></div></div>
 
 <h3 id="10-open-loop-code-and-video">10. Open loop code and video</h3>
 
@@ -140,13 +153,13 @@
   <tbody>
     <tr>
       <td>start from rest</td>
-      <td>28</td>
       <td>50</td>
+      <td>28</td>
     </tr>
     <tr>
       <td>move when running</td>
-      <td>24</td>
       <td>45</td>
+      <td>24</td>
     </tr>
   </tbody>
 </table>

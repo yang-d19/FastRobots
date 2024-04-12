@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lab6 | Fast Robots 2024 Spring</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Lab6" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Prelab" />
+<meta property="og:description" content="Prelab" />
+<link rel="canonical" href="http://localhost:4000/FastRobots/jekyll/update/2024/04/12/Lab6.html" />
+<meta property="og:url" content="http://localhost:4000/FastRobots/jekyll/update/2024/04/12/Lab6.html" />
+<meta property="og:site_name" content="Fast Robots 2024 Spring" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-04-12T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lab6" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-04-12T00:00:00-04:00","datePublished":"2024-04-12T00:00:00-04:00","description":"Prelab","headline":"Lab6","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/04/12/Lab6.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/04/12/Lab6.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FastRobots/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FastRobots/feed.xml" title="Fast Robots 2024 Spring" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FastRobots/">Fast Robots 2024 Spring</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FastRobots/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lab6</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-04-12T00:00:00-04:00" itemprop="datePublished">Apr 12, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="prelab">Prelab</h2>
+
+<h3 id="1-clearly-describe-how-you-handle-sending-and-receiving-data-over-bluetooth">1. Clearly describe how you handle sending and receiving data over Bluetooth</h3>
+
+<p>In my code, I record the state of the robot in every loop, including timestamp in millisecond, yaw angle, setpoint of yaw angle and the controller value of both side drivers.</p>
+
+<p>During the auto running process where the robot tries to maintain the given status, the transmission over bluetooth is forbiddened to ensure the high frequency of controll loop.</p>
+
+<p>When the controlling process is over, user can send the command “GET_HISTORY_DATA” over bluetooth which will notify the robot to send all of its history records to the laptop over bluetooth. The jupyter server running on the laptop will use a callback function to deal with the history records, then parse and store them.</p>
+
+<p>Finally, I use matplotlib to visualize the data, which can give us a better view of the system.</p>
+
+<h3 id="2-consider-adding-code-snippets-as-necessary-to-showcase-how-you-implemented-this-on-arduino-and-python">2. Consider adding code snippets as necessary to showcase how you implemented this on Arduino and Python</h3>
+
+<h4 id="arduino">Arduino</h4>
+
+<p>In the loop() function,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">auto_running</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">prev_auto_running</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// calculate elapsed time only when auto running</span>
+        <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="n">curr_ms</span> <span class="o">-</span> <span class="n">start_ms</span><span class="p">;</span>
+      
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">readDistance</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> 
+        <span class="n">gyr_z</span> <span class="o">=</span> <span class="n">readGyrZ</span><span class="p">();</span>
+        <span class="n">yaw</span> <span class="o">-=</span> <span class="n">gyr_z</span> <span class="o">*</span> <span class="p">(</span><span class="n">curr_ms</span> <span class="o">-</span> <span class="n">prev_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
+      
+        <span class="c1">// keepDistanceToWall(goal_distance, distance);</span>
+        <span class="n">keepYaw</span><span class="p">(</span><span class="n">goal_yaw</span><span class="p">,</span> <span class="p">(</span><span class="kt">int16_t</span><span class="p">)</span><span class="n">yaw</span><span class="p">);</span>
+      
+        <span class="c1">// save current record to array</span>
+        <span class="n">saveCurrRecordToArray</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I read the distance and gyroscope data in every loop when the robot is in <code class="language-plaintext highlighter-rouge">auto_running</code> state and save current record to an array.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">saveCurrRecordToArray</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ControllerRecord</span> <span class="n">ctrl_record</span> <span class="o">=</span> <span class="n">getCtrlRecord</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">record_ptr</span> <span class="o">&lt;</span> <span class="n">MAX_RECORDS_LEN</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">timestamp_ms</span> <span class="o">=</span> <span class="n">elapsed_ms</span><span class="p">;</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">yaw</span> <span class="o">=</span> <span class="n">yaw</span><span class="p">;</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">setpoint_yaw</span> <span class="o">=</span> <span class="n">goal_yaw</span><span class="p">;</span>
+      	<span class="p">...</span>
+        <span class="n">record_ptr</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In the <code class="language-plaintext highlighter-rouge">handleCommand()</code> function, I add the code to deal with <code class="language-plaintext highlighter-rouge">SEND_HISTORY_DATA</code> command.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">GET_HISTORY_DATA</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// forbidden transfering history data when robot is auto running</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">auto_running</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">"Failed: auto running, try later"</span><span class="p">);</span>
+        <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">const</span> <span class="n">Record</span> <span class="o">*</span><span class="n">records</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">records_size</span> <span class="o">=</span> <span class="n">getHistoryRecords</span><span class="p">(</span><span class="o">&amp;</span><span class="n">records</span><span class="p">);</span>
+    <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  	<span class="p">...</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">records_size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      	<span class="c1">// send all history records</span>
+        <span class="n">putARecordToTxEstring</span><span class="p">(</span><span class="n">records</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+        <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="python">Python</h4>
+
+<p><code class="language-plaintext highlighter-rouge">parse_str2data</code> is used to parse the string data into parts that contain the original data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">parse_str2data</span><span class="p">(</span><span class="n">ss</span><span class="p">):</span>
+    <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">:</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">timestamp</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">setpoint_distance</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">setpoint_yaw</span><span class="p">,</span> \
+    	<span class="n">left_ctrl</span><span class="p">,</span> <span class="n">right_ctrl</span><span class="p">,</span> <span class="n">left_pwm</span><span class="p">,</span> <span class="n">right_pwm</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">|</span><span class="sh">'</span><span class="p">)</span>
+    <span class="bp">...</span>
+    <span class="n">timestamps_ms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
+    <span class="n">distances</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+    <span class="n">setpoint_yaws</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">setpoint_yaw</span><span class="p">))</span>
+		<span class="bp">...</span>
+    <span class="n">right_pwms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">right_pwm</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>The above function is registered as a callback function to handle RX_STRING</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">notification_handler</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="n">byte_array</span><span class="p">):</span>
+    <span class="n">data_str</span> <span class="o">=</span> <span class="n">ble</span><span class="p">.</span><span class="nf">bytearray_to_string</span><span class="p">(</span><span class="n">byte_array</span><span class="p">)</span>
+    <span class="nf">parse_str2data</span><span class="p">(</span><span class="n">data_str</span><span class="p">)</span>
+<span class="n">ble</span><span class="p">.</span><span class="nf">start_notify</span><span class="p">(</span><span class="n">ble</span><span class="p">.</span><span class="n">uuid</span><span class="p">[</span><span class="sh">'</span><span class="s">RX_STRING</span><span class="sh">'</span><span class="p">],</span> <span class="n">notification_handler</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Finally the graph is drawed</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">plot_graph</span><span class="p">():</span>
+    <span class="n">timestamps_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">/</span> <span class="mf">1000.0</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timestamps_ms</span><span class="p">]</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>  
+    
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">setpoint_yaws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Setpoints</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Setpoints Over Time</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Setpoints</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">yaws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Yaws</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">blue</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Yaws Over Time</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Yaws</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">right_controls</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Controls</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">green</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Right Controls Over Time</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Right Controls</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Time</span><span class="sh">'</span><span class="p">)</span> 
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    
+    <span class="n">plt</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="lab-tasks">Lab Tasks</h2>
+
+<h3 id="1-pid-discussion-kpkikd-values-chosen-why-you-chose-a-combination-of-controllers-etc">1. P/I/D discussion (Kp/Ki/Kd values chosen, why you chose a combination of controllers, etc.)</h3>
+
+<p>I use PID controller, the parameters are set as follows:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PIDParam</span> <span class="n">angle_param</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">Kp</span> <span class="o">=</span> <span class="mi">35</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">Ki</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">Kd</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="p">};</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int16_t</span><span class="p">,</span> <span class="kt">int16_t</span><span class="o">&gt;</span> <span class="n">angle_pid</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int16_t</span> <span class="n">control</span> <span class="o">=</span> <span class="n">angle_param</span><span class="p">.</span><span class="n">Kp</span> <span class="o">*</span> <span class="n">error</span> 
+        <span class="o">+</span> <span class="n">angle_param</span><span class="p">.</span><span class="n">Kd</span> <span class="o">*</span> <span class="p">(</span><span class="n">error</span> <span class="o">-</span> <span class="n">angle_var</span><span class="p">.</span><span class="n">prev_error</span><span class="p">)</span>
+      	<span class="o">+</span> <span class="n">angle_param</span><span class="p">.</span><span class="n">Ki</span> <span class="o">*</span> <span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span><span class="p">;</span>
+    <span class="c1">// constrain the control value within limitation</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&gt;=</span> <span class="n">MAX_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MAX_CONTROL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&lt;=</span> <span class="n">MIN_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MIN_CONTROL</span><span class="p">;</span>
+    <span class="n">angle_var</span><span class="p">.</span><span class="n">prev_error</span> <span class="o">=</span> <span class="n">error</span><span class="p">;</span>
+  	<span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span> <span class="o">+=</span> <span class="n">error</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="o">-</span><span class="n">control</span><span class="p">,</span> <span class="n">control</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Kp</code> ensures that the robot always return to the original direction when pushed away</p>
+
+<p><code class="language-plaintext highlighter-rouge">Kd</code> prevents overshoot</p>
+
+<p><code class="language-plaintext highlighter-rouge">Ki</code> eliminate the cumulative error</p>
+
+<h3 id="2-rangesampling-time-discussion">2. Range/Sampling time discussion</h3>
+
+<p>The robot returns an array of history data that has size 842 over 12 seconds:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">GET_HISTORY_DATA</span><span class="p">,</span> <span class="sh">""</span><span class="p">)</span>
+<span class="sh">"""</span><span class="s"> 
+Size of records array: 842
+</span><span class="sh">"""</span>
+</code></pre></div></div>
+
+<p>so the approximate sampling rate is 842/12s = 70Hz</p>
+
+<h3 id="3-graphs-code-videos-images-discussion-of-reaching-task-goal">3. Graphs, code, videos, images, discussion of reaching task goal</h3>
+
+<h4 id="graphs">Graphs</h4>
+
+<p><img src="/FastRobots/images/Lab6/3plots.png" alt="3plots" style="zoom:50%;" /></p>
+
+<h4 id="videos">Videos</h4>
+
+<iframe width="325" height="578" src="https://www.youtube.com/embed/DxC1AkijgFg" title="Robot keep the original direction when pushed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<p>and this,</p>
+
+<iframe width="325" height="578" src="https://www.youtube.com/embed/Pz_mTgWw-7Y" title="Change set point of yaws of robot" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<h3 id="4-5000-wind-up-implementation-and-discussion">4. (5000) Wind-up implementation and discussion</h3>
+
+<p>There is a limit set for <code class="language-plaintext highlighter-rouge">angle_var.integral</code> so that it will not go extremely high and increase the oscillation.</p>
+
+  </div><a class="u-url" href="/FastRobots/jekyll/update/2024/04/12/Lab6.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FastRobots/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fast Robots 2024 Spring</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Fast Robots 2024 Spring</li><li><a class="u-email" href="mailto:dy297@cornell.edu">dy297@cornell.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/yang-d19"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#github"></use></svg> <span class="username">yang-d19</span></a></li><li><a href="https://www.linkedin.com/in/ding-yang-829248219"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">ding-yang-829248219</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
