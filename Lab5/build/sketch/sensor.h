@@ -22,6 +22,7 @@ struct Attitude {
   float yaw = 0;
 };
 
+void sensorSetup();
 
 void distanceSensorSetup(void);
 

@@ -1,7 +1,4 @@
 {
-    "configuration": "svl_baud=115200,loader=option_svl",
     "board": "SparkFun:apollo3:sfe_artemis_nano",
-    "programmer": "asb_programmer",
-    "port": "/dev/tty.usbserial-1140",
-    "sketch": "lab7-main/lab7-main.ino"
+    "port": "/dev/tty.usbserial-1140"
 }

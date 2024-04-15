@@ -40,13 +40,13 @@ uint16_t getHistoryRecords(const Record **all_records) {
 }
 
 void setup() {
+    Serial.begin(115200);
+
     // wait for Serial to start
     while (!Serial) {}
 
-    Serial.begin(115200);
-
     bleSetup();
-    distanceSensorSetup();
+    sensorSetup();
 
     Serial.println("Lab5 main program started");
 }

@@ -1,0 +1,9 @@
+#line 1 "/Users/yangd19/Documents/Code/ECE5160-Code/Lab6/lab6-main/.vscode/arduino.json"
+{
+    "configuration": "svl_baud=115200,loader=option_svl",
+    "board": "SparkFun:apollo3:sfe_artemis_nano",
+    "port": "/dev/tty.usbserial-1140",
+    "programmer": "asb_programmer",
+    "sketch": "lab6-main.ino",
+    "output": "../build"
+}
