@@ -21,16 +21,23 @@ full_path = os.path.join("_posts", file)
 
 # Open the file and read its contents
 with open(full_path, 'r') as file:
+    print("Reading file...")
     content = file.read()
 
 # Perform the substitution
 if direction == 0:
+    print("Converting to website version...")
     updated_content = content.replace("../images", "/FastRobots/images")
 else:
+    print("Converting to editor version...")
     updated_content = content.replace("/FastRobots/images", "../images")
+
+print(updated_content)
 
 # Open the file again in write mode and save the updated content
 with open(full_path, 'w') as file:
+    print("Updating file...")
     file.write(updated_content)
+    print("File write end.")
 
 print("File has been updated.")
