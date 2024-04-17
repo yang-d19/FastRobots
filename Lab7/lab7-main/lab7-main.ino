@@ -106,7 +106,7 @@ void loop() {
                 if (distance <= SAFE_DISTANCE) {
                     // stop auto running
                     stop();
-                    auto_running = false;
+                    // auto_running = false;
                 }
                 else {
                     stepResponse();

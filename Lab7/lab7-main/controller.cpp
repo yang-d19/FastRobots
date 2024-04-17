@@ -9,7 +9,7 @@ ControllerRecord ctrl_record;
 PIDParam pos_param = {
     .Kp = 1.5,
     .Ki = 0,
-    .Kd = 4
+    .Kd = 10
 };
 // PID parameters for angle control
 PIDParam angle_param = {
@@ -123,22 +123,29 @@ void left_wheel_control(int16_t control) {
     ctrl_record.left_control = control;
     int16_t left_pwm = 0;
     if (control >= 0) {
-        left_pwm = ctrl_pwm_map(control, 0, 1000, 55, 255);
+        // left_pwm = ctrl_pwm_map(control, 0, 1000, 55, 255);
+        left_pwm = ctrl_pwm_map(control, 0, 1000, 45, 255);
     }
     else {
-        left_pwm = ctrl_pwm_map(control, -1000, 0, -255, -30);
+        // left_pwm = ctrl_pwm_map(control, -1000, 0, -255, -30);
+        left_pwm = ctrl_pwm_map(control, -1000, 0, -255, -20);
     }
     left_wheel_move(left_pwm);
 }
+
+/* 改动 1：相同的 control 值，右轮跑得比左轮快，所以微调了映射关系（减少了 pwm 映射值上限） */
+/* 改动 2：保留了一部分死区，以免小车在 control ~= 0 时也动来动去 */
 
 void right_wheel_control(int16_t control) {
     ctrl_record.right_control = control;
     int16_t right_pwm = 0;
     if (control >= 0) {
-        right_pwm = ctrl_pwm_map(control, 0, 1000, 28, 255);
+        // right_pwm = ctrl_pwm_map(control, 0, 1000, 28, 255);
+        right_pwm = ctrl_pwm_map(control, 0, 1000, 18, 180);
     }
     else {
-        right_pwm = ctrl_pwm_map(control, -1000, 0, -255, -28);
+        // right_pwm = ctrl_pwm_map(control, -1000, 0, -255, -28);
+        right_pwm = ctrl_pwm_map(control, -1000, 0, -180, -18);
     }
     right_wheel_move(right_pwm);
 }

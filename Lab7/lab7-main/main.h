@@ -5,8 +5,8 @@
 #include "ble.h"
 #include "controller.h"
 
-// when within 30cm range from the wall, stop the robot
-#define SAFE_DISTANCE 300
+// when within 40cm range from the wall, stop the robot
+#define SAFE_DISTANCE 400
 
 // by calculation, max len is 20000
 // fastest frequency is 1000ms/2ms = 500Hz
