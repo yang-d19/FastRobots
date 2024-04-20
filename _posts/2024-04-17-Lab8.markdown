@@ -1,0 +1,143 @@
+---
+layout: post
+title:  "Lab8"
+categories: jekyll update
+---
+
+# Task B: Orientation Control
+
+> Your robot must start at the designated line (<4m from the wall), drive fast forward, and when the robot is within 3ft (914mm = 3 floor tiles in the lab) from the wall, initiate a 180 degree turn.
+
+## Video
+
+<iframe width="1580" height="683" src="https://www.youtube.com/embed/Wl64yXqeKkM" title="Fast Robot - U Turn" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+## How to achieve this
+
+### 1. Adjust range of gyroscope
+
+The default range for the gyroscope of SparkFun 9DoF IMU is +-250 degrees per second, which is enough for normal rotation. However, in the lab8, the maximum angle speed can reach more than 700 dps, so I have to adjust the full range of the sensor.
+
+<img src="/FastRobots/images/Lab8/datasheet.png" alt="datasheet" style="zoom: 40%;" />
+
+According to the datasheet, it has 4 different full-scale ranges to choose for gyroscope. I use the following code to select mode 2,
+
+```c++
+ICM_20948_fss_t myFSS;
+myFSS.g = dps1000; // (ICM_20948_GYRO_CONFIG_1_FS_SEL_e)
+                // dps250
+                // dps500
+                // dps1000
+                // dps2000
+myICM.setFullScale(ICM_20948_Internal_Gyr, myFSS);
+```
+
+### 2. Angle PID controller
+
+I choose these parameters for the angle pid controller,
+
+```c++
+PIDParam angle_param = {
+    .Kp = 50,
+    .Ki = 5,
+    .Kd = 15
+};
+```
+
+The pid controller that generate orientation control values,
+
+```c++
+std::pair<int16_t, int16_t> angle_pid(int16_t error) {
+
+    angle_var.integral += angle_param.Ki * error;
+
+    int16_t control = angle_param.Kp * error 
+        + angle_param.Kd * (error - angle_var.prev_error)
+        + angle_var.integral;
+    
+    if (control >= MAX_CONTROL) control = MAX_CONTROL;
+    if (control <= MIN_CONTROL) control = MIN_CONTROL;
+
+    angle_var.prev_error = error;
+    return std::make_pair(-control, control);
+}
+```
+
+### 3. Control straight power and orientation at the same time
+
+During this lab, we need to keep the car moving straightly and doing a sharp U turn then quickly moving back. The function `forwardKeepYaw` is designed for this purpose:
+
+```c++
+void forwardKeepYaw(int16_t setpoint_yaw, int16_t yaw, int16_t straight_control) {
+    std::pair<int16_t, int16_t> two_controlls = angle_pid(yaw - setpoint_yaw);
+
+    // if turning component is too large, straight control cannot be applied too much on motors.
+    int16_t max_straight_component = min(MAX_CONTROL - two_controlls.first, MAX_CONTROL - two_controlls.second);
+
+    int16_t straight_component = min(straight_control, max_straight_component);
+
+    ctrl_record.left_control = two_controlls.first + straight_component;
+    ctrl_record.right_control = two_controlls.second + straight_component;
+    left_wheel_control(two_controlls.first + straight_component);
+    right_wheel_control(two_controlls.second + straight_component);
+}
+```
+
+### 4. Start turning at given distance
+
+```c++
+if (distance > goal_distance) {
+    forwardKeepYaw(goal_yaw, yaw, 900);
+}
+else {
+    is_turning = true;
+
+    turn_start_ms = curr_ms;
+    turn_end_yaw = yaw - 180.0;
+
+    goal_yaw = turn_end_yaw;
+}
+```
+
+When current distance is larger than required turning distance, the car moves forward with 90% of throttle. And it immediately set its goal yaw angle to the opposite direction when it reaches within the distance limit.
+
+### 5. Graphs of recorded data
+
+The graph is drawn by the following code,
+
+```python
+def plot_yaw_graph():
+    timestamps_s = [t / 1000.0 for t in timestamps_ms]
+    
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(8, 12))  # 3 subgraphs
+    
+    ax1.scatter(timestamps_s, setpoint_yaws, label='Setpoints', color='red')
+    ax1.set_title('Setpoints Over Time')
+    ax1.legend()
+    
+    ax2.scatter(timestamps_s, yaws, label='Yaws', color='blue')
+    ax2.set_title('Yaws Over Time')
+    ax2.legend()
+    
+    ax3.scatter(timestamps_s, left_pwms, label='Left PWMs', color='green')
+    ax3.set_title('Left PWMs Over Time')
+    ax3.legend()
+    
+    ax3.scatter(timestamps_s, right_pwms, label='Right PWMs', color='yellow')
+    ax3.set_title('Right PWMs Over Time')
+    ax3.legend()
+
+    ax4.scatter(timestamps_s, gyr_zs, label='Gyro Z', color='yellow')
+    ax4.set_title('Gyr Z Over Time')
+    ax4.set_xlabel('Time')  # only set x label on the bottom subgraph
+    ax4.legend()
+    
+    plt.tight_layout()
+    plt.show()
+```
+
+
+
+<img src="/FastRobots/images/Lab8/record-graph.png" alt="record-graph" style="zoom:85%;" />
