@@ -75,6 +75,8 @@ void putARecordToTxEstring(const Record *record, uint16_t index) {
     tx_estring_value.append((int)record->left_pwm);
     tx_estring_value.append("|");
     tx_estring_value.append((int)record->right_pwm);
+    tx_estring_value.append("|");
+    tx_estring_value.append((int)record->gyr_z);
 }
 
 void handleCommand() {   

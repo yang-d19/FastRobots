@@ -22,11 +22,15 @@ struct PIDVariable {
     int16_t integral;
 };
 
+void resetPIDController(void);
+
 void keepDistanceToWall(uint16_t setpoint, uint16_t distance);
 
 void keepYaw(int16_t setpoint, int16_t yaw);
 
-void stepResponse();
+void fullPowerForward();
+
+void forwardKeepYaw(int16_t setpoint_yaw, int16_t yaw, int16_t straight_control);
 
 ControllerRecord getCtrlRecord();
 

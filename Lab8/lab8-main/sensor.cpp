@@ -45,6 +45,16 @@ void IMUSensorSetup() {
             initialized = true;
         }
     }
+
+    ICM_20948_fss_t myFSS;
+    myFSS.g = dps1000; // (ICM_20948_GYRO_CONFIG_1_FS_SEL_e)
+                    // dps250
+                    // dps500
+                    // dps1000
+                    // dps2000
+
+    myICM.setFullScale(ICM_20948_Internal_Gyr, myFSS);
+
     Serial.println("IMU Sensor initialized");
 }
 

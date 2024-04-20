@@ -1,8 +1,8 @@
 #line 1 "/Users/yangd19/Documents/Code/ECE5160-Code/Lab8/lab8-main/controller.cpp"
 #include "controller.h"
 
-const int16_t MAX_CONTROL = 800;
-const int16_t MIN_CONTROL = -800;
+const int16_t MAX_CONTROL = 900;
+const int16_t MIN_CONTROL = -900;
 
 ControllerRecord ctrl_record;
 
@@ -14,14 +14,21 @@ PIDParam pos_param = {
 };
 // PID parameters for angle control
 PIDParam angle_param = {
-    .Kp = 35,
-    .Ki = 0,
+    .Kp = 50,
+    .Ki = 5,
     .Kd = 15
 };
 
 int16_t integral = 0.0;
 
 PIDVariable pos_var, angle_var;
+
+void resetPIDController(void) {
+    pos_var.prev_error = 0.0;
+    pos_var.integral = 0.0;
+    angle_var.prev_error = 0.0;
+    angle_var.integral = 0.0;
+}
 
 
 // int prev_integral_ms = 0;
@@ -45,8 +52,11 @@ std::pair<int16_t, int16_t> angle_pid(int16_t error) {
     // 这边可能有 bug，旋转超过 180 度之后，yaw 的表示会有问题吗
     // 应该不影响，yaw 是连续的，只是多个不同的 yaw 实际上表示相同的角度朝向
 
+    angle_var.integral += angle_param.Ki * error;
+
     int16_t control = angle_param.Kp * error 
-        + angle_param.Kd * (error - angle_var.prev_error);
+        + angle_param.Kd * (error - angle_var.prev_error)
+        + angle_var.integral;
     
     if (control >= MAX_CONTROL) control = MAX_CONTROL;
     if (control <= MIN_CONTROL) control = MIN_CONTROL;
@@ -59,8 +69,8 @@ ControllerRecord getCtrlRecord() {
     return ctrl_record;
 }
 
-void keepDistanceToWall(uint16_t setpoint, uint16_t distance) {
-    std::pair<int16_t, int16_t> two_controlls = position_pid(distance - setpoint);
+void keepDistanceToWall(uint16_t setpoint_dist, uint16_t distance) {
+    std::pair<int16_t, int16_t> two_controlls = position_pid(distance - setpoint_dist);
 
     ctrl_record.left_control = two_controlls.first;
     ctrl_record.right_control = two_controlls.second;
@@ -68,8 +78,8 @@ void keepDistanceToWall(uint16_t setpoint, uint16_t distance) {
     right_wheel_control(two_controlls.second);
 }
 
-void keepYaw(int16_t setpoint, int16_t yaw) {
-    std::pair<int16_t, int16_t> two_controlls = angle_pid(yaw - setpoint);
+void keepYaw(int16_t setpoint_yaw, int16_t yaw) {
+    std::pair<int16_t, int16_t> two_controlls = angle_pid(yaw - setpoint_yaw);
 
     ctrl_record.left_control = two_controlls.first;
     ctrl_record.right_control = two_controlls.second;
@@ -77,11 +87,31 @@ void keepYaw(int16_t setpoint, int16_t yaw) {
     right_wheel_control(two_controlls.second);
 }
 
-void stepResponse() {
+void forwardKeepYaw(int16_t setpoint_yaw, int16_t yaw, int16_t straight_control) {
+    std::pair<int16_t, int16_t> two_controlls = angle_pid(yaw - setpoint_yaw);
+
+    // if turning component is too large, straight control cannot be applied too much on motors.
+    int16_t max_straight_component = min(MAX_CONTROL - two_controlls.first, MAX_CONTROL - two_controlls.second);
+
+    int16_t straight_component = min(straight_control, max_straight_component);
+
+    // 可能要调一下 wheel_control 的逻辑？在数据不在范围内时报错一下
+
+    ctrl_record.left_control = two_controlls.first + straight_component;
+    ctrl_record.right_control = two_controlls.second + straight_component;
+    left_wheel_control(two_controlls.first + straight_component);
+    right_wheel_control(two_controlls.second + straight_component);
+}
+
+void fullPowerForward() {
     ctrl_record.left_control = MAX_CONTROL;
     ctrl_record.right_control = MAX_CONTROL;
     left_wheel_control(MAX_CONTROL);
     right_wheel_control(MAX_CONTROL);
+}
+
+void sharpUTurn(uint16_t setpoint_dist, uint16_t distance, int16_t yaw) {
+
 }
 
 // pin 6, 7 have control over right wheels

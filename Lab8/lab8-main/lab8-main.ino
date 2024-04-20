@@ -3,15 +3,19 @@
 bool prev_auto_running = false;
 bool auto_running = false;
 
+bool is_turning = false;
+
 uint32_t start_ms, prev_ms, curr_ms, elapsed_ms;
-
-
+uint32_t turn_start_ms, turn_end_ms;
 
 uint16_t distance = 0;
+uint16_t goal_distance = 730;
+
 float gyr_z = 0.0;
 float yaw = 0.0;
 
-uint16_t goal_distance = 304;
+float turn_end_yaw = 0.0;
+
 int16_t goal_yaw = 0;
 
 Record records[MAX_RECORDS_LEN];
@@ -23,16 +27,29 @@ uint16_t record_ptr = 1;
 void saveCurrRecordToArray() {
     ControllerRecord ctrl_record = getCtrlRecord();
     if (record_ptr < MAX_RECORDS_LEN) {
-        records[record_ptr].timestamp_ms = elapsed_ms;
-        records[record_ptr].distance = distance;
-        records[record_ptr].setpoint_distance = goal_distance;
-        records[record_ptr].yaw = yaw;
-        records[record_ptr].setpoint_yaw = goal_yaw;
-        records[record_ptr].left_control = ctrl_record.left_control;
-        records[record_ptr].right_control = ctrl_record.right_control;
-        records[record_ptr].left_pwm = ctrl_record.left_pwm;
-        records[record_ptr].right_pwm = ctrl_record.right_pwm;
+        records[record_ptr] = {
+            .timestamp_ms = elapsed_ms,
+            .distance = distance,
+            .setpoint_distance = goal_distance,
+            .yaw = (int16_t)yaw,
+            .setpoint_yaw = goal_yaw,
+            .left_control = ctrl_record.left_control,
+            .right_control = ctrl_record.right_control,
+            .left_pwm = ctrl_record.left_pwm,
+            .right_pwm = ctrl_record.right_pwm,
+            .gyr_z = (int16_t)gyr_z
+        };
         record_ptr++;
+        // records[record_ptr].timestamp_ms = elapsed_ms;
+        // records[record_ptr].distance = distance;
+        // records[record_ptr].setpoint_distance = goal_distance;
+        // records[record_ptr].yaw = yaw;
+        // records[record_ptr].setpoint_yaw = goal_yaw;
+        // records[record_ptr].left_control = ctrl_record.left_control;
+        // records[record_ptr].right_control = ctrl_record.right_control;
+        // records[record_ptr].left_pwm = ctrl_record.left_pwm;
+        // records[record_ptr].right_pwm = ctrl_record.right_pwm;
+        // records[record_ptr].gyr_z = gyr_z;
     }
 }
 
@@ -82,14 +99,20 @@ void loop() {
         if (auto_running) {
             if (!prev_auto_running) {
                 prev_auto_running = true;
+                /*** reset all the data that are related with time ***/
+
                 // reset history records data
                 record_ptr = 1;
                 // record the start time in millisecond
                 start_ms = millis();
                 // reset yaw angle
                 yaw = 0.0;
+                // reset goal yaw angle
+                goal_yaw = 0.0;
 
-                Serial.println("Start auto running");
+                resetPIDController();
+
+                // Serial.println("Start auto running");
             }
             else {
                 // calculate elapsed time only when auto running
@@ -100,7 +123,34 @@ void loop() {
                 gyr_z = readGyrZ();
                 yaw -= gyr_z * (curr_ms - prev_ms) / 1000.0;
 
-                keepDistanceToWall(goal_distance, distance);
+                // now in the state of moving forward
+                if (!is_turning) {
+                    if (distance > goal_distance) {
+                        forwardKeepYaw(goal_yaw, yaw, 900);
+                    }
+                    else {
+                        is_turning = true;
+
+                        turn_start_ms = curr_ms;
+                        turn_end_yaw = yaw - 180.0;
+
+                        goal_yaw = turn_end_yaw;
+                    }
+                }
+                // now in the state of turning
+                else {
+                    resetPIDController();
+                    forwardKeepYaw(turn_end_yaw, yaw, 750);
+
+                    // shut down the car after 1.8s
+                    if (curr_ms - turn_start_ms > 1600) {
+                        stop();
+                        auto_running = false;
+                        is_turning = false;
+                    }
+                }
+
+                // keepDistanceToWall(goal_distance, distance);
                 // keepYaw(goal_yaw, (int16_t)yaw);
 
                 // if (distance <= SAFE_DISTANCE) {

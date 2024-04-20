@@ -28,6 +28,7 @@ struct Record {
     int16_t right_control;
     int16_t left_pwm;
     int16_t right_pwm;
+    int16_t gyr_z;
 };
 
 /*
