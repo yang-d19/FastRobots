@@ -1,0 +1,7 @@
+{
+    "board": "SparkFun:apollo3:sfe_artemis_nano",
+    "port": "/dev/tty.usbserial-1120",
+    "programmer": "asb_programmer",
+    "output": "../build",
+    "sketch": "lab9-main.ino"
+}
