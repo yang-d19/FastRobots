@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-05-03T01:50:34-04:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab9</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html" rel="alternate" type="text/html" title="Lab9" /><published>2024-04-20T00:00:00-04:00</published><updated>2024-04-20T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html"><![CDATA[<h2 id="control">Control</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-05-03T12:50:50-04:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab9</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html" rel="alternate" type="text/html" title="Lab9" /><published>2024-04-20T00:00:00-04:00</published><updated>2024-04-20T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html"><![CDATA[<h2 id="control">Control</h2>
 
 <h3 id="angular-speed-control">Angular speed control</h3>
 
@@ -733,11 +733,9 @@ Size of records array: 842
 
 <h3 id="4-5000-wind-up-implementation-and-discussion">4. (5000) Wind-up implementation and discussion</h3>
 
-<p>There is a limit set for <code class="language-plaintext highlighter-rouge">angle_var.integral</code> so that it will not go extremely high and increase the oscillation.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab5</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html" rel="alternate" type="text/html" title="Lab5" /><published>2024-03-13T00:00:00-04:00</published><updated>2024-03-13T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html"><![CDATA[<h1 id="lab5">Lab5</h1>
+<p>There is a limit set for <code class="language-plaintext highlighter-rouge">angle_var.integral</code> so that it will not go extremely high and increase the oscillation.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab5</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html" rel="alternate" type="text/html" title="Lab5" /><published>2024-03-13T00:00:00-04:00</published><updated>2024-03-13T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html"><![CDATA[<h1 id="prelab">Prelab</h1>
 
-<h2 id="prelab">Prelab</h2>
-
-<h3 id="1-clearly-describe-how-you-handle-sending-and-receiving-data-over-bluetooth">1. Clearly describe how you handle sending and receiving data over Bluetooth</h3>
+<h2 id="1-clearly-describe-how-you-handle-sending-and-receiving-data-over-bluetooth">1. Clearly describe how you handle sending and receiving data over Bluetooth</h2>
 
 <p>In my code, I record the state of the robot in every loop, including timestamp in millisecond, yaw angle, setpoint of yaw angle and the controller value of both side drivers.</p>
 
@@ -747,7 +745,7 @@ Size of records array: 842
 
 <p>Finally, I use matplotlib to visualize the data, which can give us a better view of the system.</p>
 
-<h3 id="2-consider-adding-code-snippets-as-necessary-to-showcase-how-you-implemented-this-on-arduino-and-python">2. Consider adding code snippets as necessary to showcase how you implemented this on Arduino and Python</h3>
+<h2 id="2-consider-adding-code-snippets-as-necessary-to-showcase-how-you-implemented-this-on-arduino-and-python">2. Consider adding code snippets as necessary to showcase how you implemented this on Arduino and Python</h2>
 
 <h4 id="arduino">Arduino</h4>
 
@@ -755,21 +753,15 @@ Size of records array: 842
 
 <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">auto_running</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">prev_auto_running</span><span class="p">)</span> <span class="p">{</span>
-      <span class="p">...</span>
+      <span class="p">......</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
         <span class="c1">// calculate elapsed time only when auto running</span>
         <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="n">curr_ms</span> <span class="o">-</span> <span class="n">start_ms</span><span class="p">;</span>
-      
         <span class="n">distance</span> <span class="o">=</span> <span class="n">readDistance</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> 
-        <span class="n">gyr_z</span> <span class="o">=</span> <span class="n">readGyrZ</span><span class="p">();</span>
-        <span class="n">yaw</span> <span class="o">-=</span> <span class="n">gyr_z</span> <span class="o">*</span> <span class="p">(</span><span class="n">curr_ms</span> <span class="o">-</span> <span class="n">prev_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
-      
-        <span class="c1">// keepDistanceToWall(goal_distance, distance);</span>
-        <span class="n">keepYaw</span><span class="p">(</span><span class="n">goal_yaw</span><span class="p">,</span> <span class="p">(</span><span class="kt">int16_t</span><span class="p">)</span><span class="n">yaw</span><span class="p">);</span>
-      
         <span class="c1">// save current record to array</span>
         <span class="n">saveCurrRecordToArray</span><span class="p">();</span>
+        <span class="n">keepDistanceToWall</span><span class="p">(</span><span class="n">goal_distance</span><span class="p">,</span> <span class="n">distance</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -780,9 +772,10 @@ Size of records array: 842
     <span class="n">ControllerRecord</span> <span class="n">ctrl_record</span> <span class="o">=</span> <span class="n">getCtrlRecord</span><span class="p">();</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">record_ptr</span> <span class="o">&lt;</span> <span class="n">MAX_RECORDS_LEN</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">timestamp_ms</span> <span class="o">=</span> <span class="n">elapsed_ms</span><span class="p">;</span>
-        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">yaw</span> <span class="o">=</span> <span class="n">yaw</span><span class="p">;</span>
-        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">setpoint_yaw</span> <span class="o">=</span> <span class="n">goal_yaw</span><span class="p">;</span>
-      	<span class="p">...</span>
+      	<span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span><span class="p">;</span>
+      	<span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">left_pwm</span> <span class="o">=</span> <span class="n">ctrl_record</span><span class="p">.</span><span class="n">left_pwm</span><span class="p">;</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">right_pwm</span> <span class="o">=</span> <span class="n">ctrl_record</span><span class="p">.</span><span class="n">right_pwm</span><span class="p">;</span>
+      	<span class="p">......</span>
         <span class="n">record_ptr</span><span class="o">++</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -791,17 +784,11 @@ Size of records array: 842
 <p>In the <code class="language-plaintext highlighter-rouge">handleCommand()</code> function, I add the code to deal with <code class="language-plaintext highlighter-rouge">SEND_HISTORY_DATA</code> command.</p>
 
 <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">GET_HISTORY_DATA</span><span class="p">:</span> <span class="p">{</span>
-    <span class="c1">// forbidden transfering history data when robot is auto running</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">auto_running</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">"Failed: auto running, try later"</span><span class="p">);</span>
-        <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
-        <span class="k">break</span><span class="p">;</span>
-    <span class="p">}</span>
-
+		<span class="p">......</span>
     <span class="k">const</span> <span class="n">Record</span> <span class="o">*</span><span class="n">records</span><span class="p">;</span>
     <span class="kt">uint16_t</span> <span class="n">records_size</span> <span class="o">=</span> <span class="n">getHistoryRecords</span><span class="p">(</span><span class="o">&amp;</span><span class="n">records</span><span class="p">);</span>
     <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
-  	<span class="p">...</span>
+  	<span class="p">......</span>
 
     <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">records_size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
       	<span class="c1">// send all history records</span>
@@ -818,13 +805,13 @@ Size of records array: 842
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">parse_str2data</span><span class="p">(</span><span class="n">ss</span><span class="p">):</span>
     <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">:</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">timestamp</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">setpoint_distance</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">setpoint_yaw</span><span class="p">,</span> \
+    <span class="n">timestamp</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">setpoint_distance</span><span class="p">,</span> \
     	<span class="n">left_ctrl</span><span class="p">,</span> <span class="n">right_ctrl</span><span class="p">,</span> <span class="n">left_pwm</span><span class="p">,</span> <span class="n">right_pwm</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">|</span><span class="sh">'</span><span class="p">)</span>
-    <span class="bp">...</span>
+    <span class="p">...</span><span class="bp">...</span>
     <span class="n">timestamps_ms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
     <span class="n">distances</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
-    <span class="n">setpoint_yaws</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">setpoint_yaw</span><span class="p">))</span>
-		<span class="bp">...</span>
+		<span class="p">...</span><span class="bp">...</span>
+    <span class="n">left_pwms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">left_pwm</span><span class="p">))</span>
     <span class="n">right_pwms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">right_pwm</span><span class="p">))</span>
 </code></pre></div></div>
 
@@ -836,54 +823,199 @@ Size of records array: 842
 <span class="n">ble</span><span class="p">.</span><span class="nf">start_notify</span><span class="p">(</span><span class="n">ble</span><span class="p">.</span><span class="n">uuid</span><span class="p">[</span><span class="sh">'</span><span class="s">RX_STRING</span><span class="sh">'</span><span class="p">],</span> <span class="n">notification_handler</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>Finally the graph is drawed</p>
+<p>Finally the graph is drawed with pwm values shown</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">plot_graph</span><span class="p">():</span>
     <span class="n">timestamps_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">/</span> <span class="mf">1000.0</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timestamps_ms</span><span class="p">]</span>
-    <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>  
+   
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">()</span>
     
-    <span class="n">ax1</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">setpoint_yaws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Setpoints</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Setpoints Over Time</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Setpoints</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax1</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="sh">'</span><span class="s">tab:red</span><span class="sh">'</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Time (s)</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Distance</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">distances</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="sh">'</span><span class="s">y</span><span class="sh">'</span><span class="p">)</span>
     
-    <span class="n">ax2</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">yaws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Yaws</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">blue</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Yaws Over Time</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Yaws</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax2</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="p">.</span><span class="nf">twinx</span><span class="p">()</span>  
     
-    <span class="n">ax3</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">right_controls</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Controls</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">green</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Right Controls Over Time</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Right Controls</span><span class="sh">'</span><span class="p">)</span>
-    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Time</span><span class="sh">'</span><span class="p">)</span> 
-    <span class="n">ax3</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="sh">'</span><span class="s">tab:blue</span><span class="sh">'</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">PWM</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>  
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">right_pwms</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="sh">'</span><span class="s">y</span><span class="sh">'</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
     
-    <span class="n">plt</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">'</span><span class="s">Distance and PWM vs. Time</span><span class="sh">'</span><span class="p">)</span>
     <span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
 </code></pre></div></div>
 
-<h2 id="lab-tasks">Lab Tasks</h2>
+<h1 id="lab-tasks">Lab Tasks</h1>
 
-<h3 id="1-pid-discussion-kpkikd-values-chosen-why-you-chose-a-combination-of-controllers-etc">1. P/I/D discussion (Kp/Ki/Kd values chosen, why you chose a combination of controllers, etc.)</h3>
+<h2 id="1-pid-discussion-kpkikd-values-chosen-why-you-chose-a-combination-of-controllers-etc">1. P/I/D discussion (Kp/Ki/Kd values chosen, why you chose a combination of controllers, etc.)</h2>
 
 <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">Kp</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">;</span>
 <span class="kt">float</span> <span class="n">Ki</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
-<span class="kt">float</span> <span class="n">Kd</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">Kd</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
 </code></pre></div></div>
 
-<p>Kp is responsible for keep</p>
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">Kp</code> ensures that the robot have the ability to keep the given distance. The larger <code class="language-plaintext highlighter-rouge">Kp</code> is, the robot moves faster towards the given position. After testing, <code class="language-plaintext highlighter-rouge">Kp = 1.5</code> works best for my robot.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">Kd</code> prevents overshoot. It punish the behavior of moving too fast. If <code class="language-plaintext highlighter-rouge">Kd</code> is too small or set to 0, the robot will oscillate around the given distance. At first I tried <code class="language-plaintext highlighter-rouge">Kd = 5, 10, 15</code>, but the robot will still collide to the wall when the initial speed is high. Finally <code class="language-plaintext highlighter-rouge">Kd = 20</code> works best.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">Ki</code> eliminate the cumulative error. I find that the cumulative error in this Lab is small enough to ignore, so I set <code class="language-plaintext highlighter-rouge">Ki</code> to zero.</p>
+  </li>
+</ul>
 
-<p>If only use proportional controller, there will be large overshoot. So I introduced Dirivative controller to eliminiate the oscilation.</p>
+<p>So eventually, the controller type that I use is PD controller.</p>
 
-<h3 id="2-rangesampling-time-discussion">2. Range/Sampling time discussion</h3>
+<h2 id="2-rangesampling-time-discussion">2. Range/Sampling time discussion</h2>
 
-<h3 id="3-graphs-code-videos-images-discussion-of-reaching-task-goal">3. Graphs, code, videos, images, discussion of reaching task goal</h3>
+<p>I choose <strong>Medium range</strong> for distance sensor because it provides a relatively large detection range and low delay.</p>
 
-<h3 id="4-graph-data-should-include-tof-vs-time-and-motor-input-vs-time-and-whatever-helps-with-debugging">4. Graph data should include Tof vs time and Motor input vs time (and whatever helps with debugging)</h3>
+<p>The distance sensor behaves normally (has low standard deviation) in this Lab settings.</p>
 
-<p><img src="../../../../Library/Application Support/typora-user-images/image-20240502120719574.png" alt="image-20240502120719574" style="zoom:50%;" /></p>
+<p><img src="/FastRobots/images/Lab5/time-interval.png" alt="time-interval" style="zoom:50%;" /></p>
 
-<h3 id="5-5000-wind-up-implementation-and-discussion">5. (5000) Wind-up implementation and discussion</h3>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Lab5]]></summary></entry><entry><title type="html">Lab4</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" rel="alternate" type="text/html" title="Lab4" /><published>2024-03-05T00:00:00-05:00</published><updated>2024-03-05T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"><![CDATA[<h2 id="prelab">Prelab</h2>
+<p>The sampling time is about 12ms. So the frequency of the main loop() function is about 1000ms/12ms = 83Hz. It is faster than the ToF sensor because I set <code class="language-plaintext highlighter-rouge">blocking=false</code> when reading the distance sensor data. My program just use distance data before if the new data is not ready to read.</p>
+
+<h2 id="3-graphs-code-videos-images-discussion-of-reaching-task-goal-graph-data-should-include-tof-vs-time-and-motor-input-vs-time">3. Graphs, code, videos, images, discussion of reaching task goal (Graph data should include Tof vs time and Motor input vs time)</h2>
+
+<h3 id="codes">Codes</h3>
+
+<p>This is the core function that is called every loop in <code class="language-plaintext highlighter-rouge">main.ino</code>.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">keepDistanceToWall</span><span class="p">(</span><span class="n">goal_distance</span><span class="p">,</span> <span class="n">distance</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The function is provided by the following code in <code class="language-plaintext highlighter-rouge">controller.cpp</code>:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int16_t</span> <span class="nf">pid</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int16_t</span> <span class="n">control</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">*</span> <span class="n">error</span> <span class="o">+</span> <span class="n">Kd</span> <span class="o">*</span> <span class="p">(</span><span class="n">error</span> <span class="o">-</span> <span class="n">prev_error</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&gt;=</span> <span class="n">MAX_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MAX_CONTROL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&lt;=</span> <span class="n">MIN_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MIN_CONTROL</span><span class="p">;</span>
+    <span class="n">prev_error</span> <span class="o">=</span> <span class="n">error</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">control</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">keepDistanceToWall</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">setpoint</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">distance</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int16_t</span> <span class="n">control</span> <span class="o">=</span> <span class="n">pid</span><span class="p">(</span><span class="n">distance</span> <span class="o">-</span> <span class="n">setpoint</span><span class="p">);</span>
+    <span class="n">straight_control</span><span class="p">(</span><span class="n">control</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">straight_controll()</code> is defined here:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">straight_control</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">control</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// map control signal to actual pwm in order to </span>
+    <span class="c1">// eliminate the influence of dead band</span>
+    <span class="n">ctrl_record</span><span class="p">.</span><span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="p">;</span>
+    <span class="n">left_wheel_control</span><span class="p">(</span><span class="n">control</span><span class="p">);</span>
+    <span class="n">right_wheel_control</span><span class="p">(</span><span class="n">control</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">left_wheel_control</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">control</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ctrl_record</span><span class="p">.</span><span class="n">left_control</span> <span class="o">=</span> <span class="n">control</span><span class="p">;</span>
+    <span class="kt">int16_t</span> <span class="n">left_pwm</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">left_pwm</span> <span class="o">=</span> <span class="n">ctrl_pwm_map</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">left_pwm</span> <span class="o">=</span> <span class="n">ctrl_pwm_map</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">255</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">left_wheel_move</span><span class="p">(</span><span class="n">left_pwm</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">right_wheel_control</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">control</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ctrl_record</span><span class="p">.</span><span class="n">right_control</span> <span class="o">=</span> <span class="n">control</span><span class="p">;</span>
+    <span class="kt">int16_t</span> <span class="n">right_pwm</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">right_pwm</span> <span class="o">=</span> <span class="n">ctrl_pwm_map</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">right_pwm</span> <span class="o">=</span> <span class="n">ctrl_pwm_map</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">255</span><span class="p">,</span> <span class="o">-</span><span class="mi">28</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">right_wheel_move</span><span class="p">(</span><span class="n">right_pwm</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">left_wheel_control()</code> and <code class="language-plaintext highlighter-rouge">right_wheel_control()</code> have different mapping functions in order to eliminate the influence of the asymmetry of left and right motor output power.</p>
+
+<h3 id="graphs-and-videos">Graphs and Videos</h3>
+
+<h4 id="release-from-a-certain-distance-and-let-it-run-towards-the-wall">Release from a certain distance and let it run towards the wall</h4>
+
+<p><img src="/FastRobots/images/Lab5/distance with pwms.png" alt="distance with pwms" style="zoom:50%;" /></p>
+
+<iframe width="1613" height="683" src="https://www.youtube.com/embed/sGR2bUug3v0" title="Fast Robot Lab5 - 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<h4 id="use-feet-to-interact-with-it-to-see-its-dynamic-performance">Use feet to interact with it to see its dynamic performance</h4>
+
+<p><img src="/FastRobots/images/Lab5/distance with pwm -2.png" alt="distance with pwm -2" style="zoom:50%;" /></p>
+
+<iframe width="407" height="724" src="https://www.youtube.com/embed/imrV14bbdZE" title="Fast Robot Lab5 - 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<h2 id="5-5000-wind-up-implementation-and-discussion">5. (5000) Wind-up implementation and discussion</h2>
+
+<p>Add the upper and lower bound of integrator and prevent the problem:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int16_t</span> <span class="n">control</span> <span class="o">=</span> <span class="n">pos_param</span><span class="p">.</span><span class="n">Kp</span> <span class="o">*</span> <span class="n">error</span> <span class="o">+</span> <span class="n">pos_param</span><span class="p">.</span><span class="n">Kd</span> <span class="o">*</span> <span class="p">(</span><span class="n">error</span> <span class="o">-</span> <span class="n">prev_error</span><span class="p">)</span> <span class="o">+</span> <span class="n">Ki</span> <span class="o">*</span> <span class="n">integral</span><span class="p">;</span>
+
+<span class="n">integral</span> <span class="o">+=</span> <span class="n">error</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">intergral</span> <span class="o">&gt;</span> <span class="mi">300</span><span class="p">)</span> <span class="n">integral</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">integral</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">300</span><span class="p">)</span> <span class="n">integral</span> <span class="o">=</span> <span class="o">-</span><span class="mi">300</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&gt;=</span> <span class="n">MAX_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MAX_CONTROL</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&lt;=</span> <span class="n">MIN_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MIN_CONTROL</span><span class="p">;</span>
+<span class="n">prev_error</span> <span class="o">=</span> <span class="n">error</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The wind-up protection is important, because if the robot was prevented from getting close to the goal distance by some outside force, so integral term will continue accumulating until getting extremely large or overflow, which will cause problems when it is set free.</p>
+
+<p>With this protection, the intergal term can be kept within a reasonable range, and can be lowered quickly to correct accumulated errors when the robot moves without resistance.</p>
+
+<h2 id="6-simple-linear-extrapolation-algorithm">6. Simple linear extrapolation algorithm</h2>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">uint16_t</span> <span class="n">real_distances</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="kt">uint32_t</span> <span class="n">real_timestamps</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+
+<span class="kt">uint8_t</span> <span class="n">real_ptr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+		<span class="p">......</span>
+      
+    <span class="k">if</span> <span class="p">(</span><span class="n">isReady</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">readDistance</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">real_distances</span><span class="p">[</span><span class="n">real_ptr</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance</span><span class="p">;</span>
+        <span class="n">real_timestamps</span><span class="p">[</span><span class="n">real_ptr</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">elapsed_ms</span><span class="p">;</span>
+        <span class="n">real_ptr</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">real_ptr</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">real_distances</span><span class="p">[</span><span class="n">real_ptr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">t_now</span> <span class="o">=</span> <span class="n">elapsed_ms</span><span class="p">;</span>
+            <span class="kt">int</span> <span class="n">t_prev1</span> <span class="o">=</span> <span class="n">real_timestamps</span><span class="p">[(</span><span class="n">real_ptr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">];</span>
+            <span class="kt">int</span> <span class="n">t_prev2</span> <span class="o">=</span> <span class="n">real_timestamps</span><span class="p">[</span><span class="n">real_ptr</span> <span class="o">%</span> <span class="mi">2</span><span class="p">];</span>
+
+            <span class="kt">int</span> <span class="n">d_prev1</span> <span class="o">=</span> <span class="n">real_distances</span><span class="p">[(</span><span class="n">real_ptr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">];</span>
+            <span class="kt">int</span> <span class="n">d_prev2</span> <span class="o">=</span> <span class="n">real_distances</span><span class="p">[</span><span class="n">real_ptr</span> <span class="o">%</span> <span class="mi">2</span><span class="p">];</span>
+
+            <span class="kt">float</span> <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span><span class="p">)(</span><span class="n">t_now</span> <span class="o">-</span> <span class="n">t_prev1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="kt">float</span><span class="p">)(</span><span class="n">t_prev1</span> <span class="o">-</span> <span class="n">t_prev2</span><span class="p">);</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">d_prev1</span> <span class="o">-</span> <span class="n">d_prev2</span><span class="p">)</span> <span class="o">+</span> <span class="n">d_prev1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>  
+      
+   	<span class="p">......</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The distance data after linear extrapolation looks like this. It increases the oscillation of the distance data, but provide a better estimation compared to just use the last sensor reading.</p>
+
+<p><img src="/FastRobots/images/Lab5/no-better.png" alt="no-better" style="zoom:50%;" /></p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab4</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" rel="alternate" type="text/html" title="Lab4" /><published>2024-03-05T00:00:00-05:00</published><updated>2024-03-05T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"><![CDATA[<h2 id="prelab">Prelab</h2>
 
 <h3 id="1-diagram-with-your-intended-connections-between-the-motor-drivers-artemis-and-battery-with-specific-pin-numbers">1. Diagram with your intended connections between the motor drivers, Artemis, and battery (with specific pin numbers)</h3>
 
