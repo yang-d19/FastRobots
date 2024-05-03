@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-04-23T03:15:30-04:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab9</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html" rel="alternate" type="text/html" title="Lab9" /><published>2024-04-20T00:00:00-04:00</published><updated>2024-04-20T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html"><![CDATA[<h2 id="control">Control</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-05-03T01:50:34-04:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab9</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html" rel="alternate" type="text/html" title="Lab9" /><published>2024-04-20T00:00:00-04:00</published><updated>2024-04-20T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/04/20/Lab9.html"><![CDATA[<h2 id="control">Control</h2>
 
 <h3 id="angular-speed-control">Angular speed control</h3>
 
@@ -733,65 +733,157 @@ Size of records array: 842
 
 <h3 id="4-5000-wind-up-implementation-and-discussion">4. (5000) Wind-up implementation and discussion</h3>
 
-<p>There is a limit set for <code class="language-plaintext highlighter-rouge">angle_var.integral</code> so that it will not go extremely high and increase the oscillation.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab5</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html" rel="alternate" type="text/html" title="Lab5" /><published>2024-03-13T00:00:00-04:00</published><updated>2024-03-13T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html"><![CDATA[<p>Sensor range: 0 ~ 4000mm</p>
+<p>There is a limit set for <code class="language-plaintext highlighter-rouge">angle_var.integral</code> so that it will not go extremely high and increase the oscillation.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab5</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html" rel="alternate" type="text/html" title="Lab5" /><published>2024-03-13T00:00:00-04:00</published><updated>2024-03-13T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/13/Lab5.html"><![CDATA[<h1 id="lab5">Lab5</h1>
 
-<p>Set point: 304 mm</p>
+<h2 id="prelab">Prelab</h2>
 
-<p>control variable range?: -1000 ~ +1000</p>
+<h3 id="1-clearly-describe-how-you-handle-sending-and-receiving-data-over-bluetooth">1. Clearly describe how you handle sending and receiving data over Bluetooth</h3>
 
-<p>map: -1000 ~ 0 -&gt; -255 ~ -20</p>
+<p>In my code, I record the state of the robot in every loop, including timestamp in millisecond, yaw angle, setpoint of yaw angle and the controller value of both side drivers.</p>
 
-<p>When blocking = false, all test result are 2ms</p>
+<p>During the auto running process where the robot tries to maintain the given status, the transmission over bluetooth is forbiddened to ensure the high frequency of controll loop.</p>
 
-<p>So all the tests below are blocking = true by default</p>
+<p>When the controlling process is over, user can send the command “GET_HISTORY_DATA” over bluetooth which will notify the robot to send all of its history records to the laptop over bluetooth. The jupyter server running on the laptop will use a callback function to deal with the history records, then parse and store them.</p>
 
-<h3 id="distance-mode-long">Distance Mode: Long</h3>
+<p>Finally, I use matplotlib to visualize the data, which can give us a better view of the system.</p>
 
-<p>**Continous time interval: 50 **</p>
+<h3 id="2-consider-adding-code-snippets-as-necessary-to-showcase-how-you-implemented-this-on-arduino-and-python">2. Consider adding code snippets as necessary to showcase how you implemented this on Arduino and Python</h3>
 
-<ul>
-  <li>92 ms (92, 93, 92, 92, 93)</li>
-</ul>
+<h4 id="arduino">Arduino</h4>
 
-<p><strong>Continous time interval: 100</strong></p>
+<p>In the loop() function,</p>
 
-<ul>
-  <li>92ms (92, 93, 92, 93, 92)</li>
-</ul>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">auto_running</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">prev_auto_running</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// calculate elapsed time only when auto running</span>
+        <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="n">curr_ms</span> <span class="o">-</span> <span class="n">start_ms</span><span class="p">;</span>
+      
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">readDistance</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> 
+        <span class="n">gyr_z</span> <span class="o">=</span> <span class="n">readGyrZ</span><span class="p">();</span>
+        <span class="n">yaw</span> <span class="o">-=</span> <span class="n">gyr_z</span> <span class="o">*</span> <span class="p">(</span><span class="n">curr_ms</span> <span class="o">-</span> <span class="n">prev_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
+      
+        <span class="c1">// keepDistanceToWall(goal_distance, distance);</span>
+        <span class="n">keepYaw</span><span class="p">(</span><span class="n">goal_yaw</span><span class="p">,</span> <span class="p">(</span><span class="kt">int16_t</span><span class="p">)</span><span class="n">yaw</span><span class="p">);</span>
+      
+        <span class="c1">// save current record to array</span>
+        <span class="n">saveCurrRecordToArray</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-<h3 id="distance-mode-medium">Distance Mode: Medium</h3>
+<p>I read the distance and gyroscope data in every loop when the robot is in <code class="language-plaintext highlighter-rouge">auto_running</code> state and save current record to an array.</p>
 
-<p><strong>Continous time interval: 33</strong></p>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">saveCurrRecordToArray</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ControllerRecord</span> <span class="n">ctrl_record</span> <span class="o">=</span> <span class="n">getCtrlRecord</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">record_ptr</span> <span class="o">&lt;</span> <span class="n">MAX_RECORDS_LEN</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">timestamp_ms</span> <span class="o">=</span> <span class="n">elapsed_ms</span><span class="p">;</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">yaw</span> <span class="o">=</span> <span class="n">yaw</span><span class="p">;</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">setpoint_yaw</span> <span class="o">=</span> <span class="n">goal_yaw</span><span class="p">;</span>
+      	<span class="p">...</span>
+        <span class="n">record_ptr</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-<ul>
-  <li>61ms (61, 61, 61, 61, 61)</li>
-</ul>
+<p>In the <code class="language-plaintext highlighter-rouge">handleCommand()</code> function, I add the code to deal with <code class="language-plaintext highlighter-rouge">SEND_HISTORY_DATA</code> command.</p>
 
-<p><strong>Continous time interval: 100</strong></p>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">GET_HISTORY_DATA</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// forbidden transfering history data when robot is auto running</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">auto_running</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">"Failed: auto running, try later"</span><span class="p">);</span>
+        <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
 
-<ul>
-  <li>92ms (93, 92, 93)</li>
-</ul>
+    <span class="k">const</span> <span class="n">Record</span> <span class="o">*</span><span class="n">records</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">records_size</span> <span class="o">=</span> <span class="n">getHistoryRecords</span><span class="p">(</span><span class="o">&amp;</span><span class="n">records</span><span class="p">);</span>
+    <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  	<span class="p">...</span>
 
-<p><strong>Continous time interval: 200</strong></p>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">records_size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      	<span class="c1">// send all history records</span>
+        <span class="n">putARecordToTxEstring</span><span class="p">(</span><span class="n">records</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+        <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-<ul>
-  <li>185ms (185, 184, 185)</li>
-</ul>
+<h4 id="python">Python</h4>
 
-<h3 id="distance-mode-short">Distance Mode: Short</h3>
+<p><code class="language-plaintext highlighter-rouge">parse_str2data</code> is used to parse the string data into parts that contain the original data.</p>
 
-<p><strong>Continous time interval: 20</strong></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">parse_str2data</span><span class="p">(</span><span class="n">ss</span><span class="p">):</span>
+    <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">:</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">timestamp</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">setpoint_distance</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">setpoint_yaw</span><span class="p">,</span> \
+    	<span class="n">left_ctrl</span><span class="p">,</span> <span class="n">right_ctrl</span><span class="p">,</span> <span class="n">left_pwm</span><span class="p">,</span> <span class="n">right_pwm</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">|</span><span class="sh">'</span><span class="p">)</span>
+    <span class="bp">...</span>
+    <span class="n">timestamps_ms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
+    <span class="n">distances</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+    <span class="n">setpoint_yaws</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">setpoint_yaw</span><span class="p">))</span>
+		<span class="bp">...</span>
+    <span class="n">right_pwms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">right_pwm</span><span class="p">))</span>
+</code></pre></div></div>
 
-<ul>
-  <li>37ms (37, 37, 37)</li>
-</ul>
+<p>The above function is registered as a callback function to handle RX_STRING</p>
 
-<p><strong>Continous time interval: 100</strong></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">notification_handler</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="n">byte_array</span><span class="p">):</span>
+    <span class="n">data_str</span> <span class="o">=</span> <span class="n">ble</span><span class="p">.</span><span class="nf">bytearray_to_string</span><span class="p">(</span><span class="n">byte_array</span><span class="p">)</span>
+    <span class="nf">parse_str2data</span><span class="p">(</span><span class="n">data_str</span><span class="p">)</span>
+<span class="n">ble</span><span class="p">.</span><span class="nf">start_notify</span><span class="p">(</span><span class="n">ble</span><span class="p">.</span><span class="n">uuid</span><span class="p">[</span><span class="sh">'</span><span class="s">RX_STRING</span><span class="sh">'</span><span class="p">],</span> <span class="n">notification_handler</span><span class="p">)</span>
+</code></pre></div></div>
 
-<ul>
-  <li>92ms (94, 92, 92)</li>
-</ul>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Sensor range: 0 ~ 4000mm]]></summary></entry><entry><title type="html">Lab4</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" rel="alternate" type="text/html" title="Lab4" /><published>2024-03-05T00:00:00-05:00</published><updated>2024-03-05T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"><![CDATA[<h2 id="prelab">Prelab</h2>
+<p>Finally the graph is drawed</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">plot_graph</span><span class="p">():</span>
+    <span class="n">timestamps_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">/</span> <span class="mf">1000.0</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timestamps_ms</span><span class="p">]</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>  
+    
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">setpoint_yaws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Setpoints</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Setpoints Over Time</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Setpoints</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">yaws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Yaws</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">blue</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Yaws Over Time</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Yaws</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">timestamps_s</span><span class="p">,</span> <span class="n">right_controls</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Controls</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">green</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Right Controls Over Time</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Right Controls</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Time</span><span class="sh">'</span><span class="p">)</span> 
+    <span class="n">ax3</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+    
+    <span class="n">plt</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="lab-tasks">Lab Tasks</h2>
+
+<h3 id="1-pid-discussion-kpkikd-values-chosen-why-you-chose-a-combination-of-controllers-etc">1. P/I/D discussion (Kp/Ki/Kd values chosen, why you chose a combination of controllers, etc.)</h3>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">Kp</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">Ki</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">Kd</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Kp is responsible for keep</p>
+
+<p>If only use proportional controller, there will be large overshoot. So I introduced Dirivative controller to eliminiate the oscilation.</p>
+
+<h3 id="2-rangesampling-time-discussion">2. Range/Sampling time discussion</h3>
+
+<h3 id="3-graphs-code-videos-images-discussion-of-reaching-task-goal">3. Graphs, code, videos, images, discussion of reaching task goal</h3>
+
+<h3 id="4-graph-data-should-include-tof-vs-time-and-motor-input-vs-time-and-whatever-helps-with-debugging">4. Graph data should include Tof vs time and Motor input vs time (and whatever helps with debugging)</h3>
+
+<p><img src="../../../../Library/Application Support/typora-user-images/image-20240502120719574.png" alt="image-20240502120719574" style="zoom:50%;" /></p>
+
+<h3 id="5-5000-wind-up-implementation-and-discussion">5. (5000) Wind-up implementation and discussion</h3>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Lab5]]></summary></entry><entry><title type="html">Lab4</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html" rel="alternate" type="text/html" title="Lab4" /><published>2024-03-05T00:00:00-05:00</published><updated>2024-03-05T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/03/05/Lab4.html"><![CDATA[<h2 id="prelab">Prelab</h2>
 
 <h3 id="1-diagram-with-your-intended-connections-between-the-motor-drivers-artemis-and-battery-with-specific-pin-numbers">1. Diagram with your intended connections between the motor drivers, Artemis, and battery (with specific pin numbers)</h3>
 
@@ -906,39 +998,311 @@ Size of records array: 842
       <td>24</td>
     </tr>
   </tbody>
-</table>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab3</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3.html" rel="alternate" type="text/html" title="Lab3" /><published>2024-02-21T00:00:00-05:00</published><updated>2024-02-21T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3.html"><![CDATA[<h1 id="lab3">Lab3</h1>
-
-<h2 id="prelab">Prelab</h2>
+</table>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab3</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3.html" rel="alternate" type="text/html" title="Lab3" /><published>2024-02-21T00:00:00-05:00</published><updated>2024-02-21T00:00:00-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/21/Lab3.html"><![CDATA[<h2 id="prelab">Prelab</h2>
 
 <h3 id="1-note-the-i2c-sensor-address">1. Note the I2C sensor address</h3>
 
-<p><img src="../images/Lab3/i2c addr of ToF sensor.png" alt="i2c addr of ToF sensor" style="zoom:50%;" /></p>
+<p><img src="/FastRobots/images/Lab3/i2c addr of ToF sensor.png" alt="i2c addr of ToF sensor" style="zoom: 33%;" /></p>
 
-<p>The I2C sensor address if 0x29</p>
+<p>From the datasheet of VL53L1X Distance Sensor, we can read that the I2C sensor address if <strong>0x29</strong>.</p>
 
 <h3 id="2-briefly-discuss-the-approach-to-using-2-tof-sensors">2. <strong>Briefly</strong> discuss the approach to using 2 ToF sensors</h3>
 
+<p>Although the lab guide suggests using <code class="language-plaintext highlighter-rouge">SparkFun VL53L1X 4m Laser Distance Sensor</code> library, it doesnot have a clear and direct example that shows how to use more than 1 ToF sensors simaltaneously. So I choose to use the <code class="language-plaintext highlighter-rouge">VL53L1X</code> developed by Pololu.</p>
+
+<p><img src="/FastRobots/images/Lab3/vl53l1x.png" alt="vl53l1x" style="zoom:50%;" /></p>
+
+<p>Load the <code class="language-plaintext highlighter-rouge">ContinuousMultipleSensors.ino</code> file from its Examples. It provide the sketch of using mulitple ToF sensors. I do the following job to make it compatible with my own robot.</p>
+
+<h4 id="1-solder-two-seperate-wires-to-their-shutdown-pins">(1) Solder two seperate wires to their shutdown pins</h4>
+
+<p><img src="/FastRobots/images/Lab3/shutdown pin wires.jpg" alt="shutdown pin wires" style="zoom: 20%;" /></p>
+
+<ul>
+  <li>Green wire connects pin 15 and the XSHUT of front ToF sensor</li>
+  <li>Yellow wire connects pin 16 and the XSHUT of side ToF sensor</li>
+</ul>
+
+<h4 id="2-configure-shutdown-pins-number-and-reset-their-address">(2) Configure shutdown pins number and reset their address</h4>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">xshutPins</span><span class="p">[</span><span class="n">sensorCount</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span> <span class="p">};</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sensorCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Stop driving this sensor's XSHUT low. This should allow the carrier</span>
+  <span class="c1">// board to pull it high. (We do NOT want to drive XSHUT high since it is</span>
+  <span class="c1">// not level shifted.) Then wait a bit for the sensor to start up.</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="n">xshutPins</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">INPUT</span><span class="p">);</span>
+  <span class="p">......</span>
+    
+  <span class="c1">// reset sensor I2C address</span>
+  <span class="n">sensors</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">setAddress</span><span class="p">(</span><span class="mh">0x2A</span> <span class="o">+</span> <span class="n">i</span><span class="p">);</span>
+  <span class="p">......</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
 <h3 id="3-briefly-discuss-placement-of-sensors-on-robot-and-scenarios-where-you-will-miss-obstacles">3. <strong>Briefly</strong> discuss placement of sensors on robot and scenarios where you will miss obstacles</h3>
 
+<p>One installed on the front of the robot and the other on the right side of the robot.</p>
+
+<p>Scenarios that may miss obstables:</p>
+
+<ul>
+  <li>The obstacles are on the left or on the back of the robot</li>
+  <li>The obstacles are too high or too low</li>
+</ul>
+
 <h3 id="4-sketch-of-wiring-diagram">4. Sketch of wiring diagram</h3>
+
+<p><img src="/FastRobots/images/Lab3/2tof.jpg" alt="2tof" style="zoom: 33%;" /></p>
 
 <h2 id="lab-tasks">Lab Tasks</h2>
 
 <h3 id="1-picture-of-your-tof-sensor-connected-to-your-qwiic-breakout-board">1. Picture of your ToF sensor connected to your QWIIC breakout board</h3>
 
+<p><img src="/FastRobots/images/Lab3/breaout board.jpg" alt="breaout board" style="zoom:25%;" /></p>
+
 <h3 id="2-screenshot-of-artemis-scanning-for-i2c-device-and-discussion-on-i2c-address">2. Screenshot of Artemis scanning for I2C device (and discussion on I2C address)</h3>
+
+<p>I add the following code to display the process of scanning for I2C devices:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sensorCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="p">......</span>
+
+  <span class="kt">uint8_t</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">sensors</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">getAddress</span><span class="p">();</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"Detected sensor %d with address %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">addr</span><span class="p">);</span>
+  <span class="p">......</span>
+
+  <span class="c1">// Each sensor must have its address changed to a unique value other than</span>
+  <span class="c1">// the default of 0x29 (except for the last one, which could be left at</span>
+  <span class="c1">// the default). To make it simple, we'll just count up from 0x2A.</span>
+  <span class="n">sensors</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">setAddress</span><span class="p">(</span><span class="mh">0x2A</span> <span class="o">+</span> <span class="n">i</span><span class="p">);</span>
+
+  <span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"Set new address %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="mh">0x2A</span> <span class="o">+</span> <span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The screenshot:</p>
+
+<p><img src="/FastRobots/images/Lab3/scan i2c devices.png" alt="scan i2c devices" style="zoom:45%;" /></p>
+
+<p>41 in decimal is 0x29 in hexadecimal, which is same as the initial i2c address.</p>
+
+<p>The newly set address is 42 and 43, which correspond to 0x2A and 0x2B.</p>
+
+<p>Now the 2 ToF sensors have two different I2C address, so they can all be read on the same time.</p>
 
 <h3 id="3-discussion-and-pictures-of-sensor-data-with-chosen-mode">3. Discussion and pictures of sensor data with chosen mode</h3>
 
+<p>From 100mm to 1000mm, I sampled 20 data points at each position with three diffrent modes, and plot them on the graph.</p>
+
+<p><img src="/FastRobots/images/Lab3/3modes-compare.png" alt="3modes-compare" style="zoom:33%;" /></p>
+
+<p>The short mode has least standard deviation. The deviation of sample datapoints at each position of short mode is plotted below:</p>
+
+<p><img src="/FastRobots/images/Lab3/std_dev.png" alt="std_dev" style="zoom: 33%;" /></p>
+
+<p>It can be seen from the plot that when the distance is larger than 1.3m, the standard deviation of the data points has a large leap. So if we choose Short Mode, we’d better keep the obstacles within 1.3m of the ToF sensor.</p>
+
 <h3 id="4-2-tof-sensors-discussion-and-screenshot-of-sensors-working-in-parallel">4. 2 ToF sensors: Discussion and screenshot of sensors working in parallel</h3>
+
+<p>Two ToF sensors are connected through Qwiic connect system to the Artemis board, with the help of a multiport board. However, the default address of I2C address are the same for two ToF sensors, so we need to modify the hardware to support two sensors working in parellel.</p>
+
+<p>The first thing I do is solder two seperate wires to each of the sensor’s XSHUT pin. And they are all pulled LOW in order to disable the sensors. Then one by one, stop driving the XSHUT pin LOW, which will enable a certain sensor. After that, setting the Distance Mode of current sensor and assign a new address to it, so that later we can directly call the sensors without manipulating the XSHUT pins.</p>
+
+<p>Now all the sensors can work in the same time. Below is the screenshot:</p>
+
+<p><img src="/FastRobots/images/Lab3/paralell.png" alt="paralell" style="zoom: 40%;" /></p>
 
 <h3 id="5-tof-sensor-speed-discussion-on-speed-and-limiting-factor-include-code-snippet-of-how-you-do-this">5. Tof sensor speed: Discussion on speed and limiting factor; include code snippet of how you do this</h3>
 
+<p>I record the distance data to an array without blocking the main loop of the program,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Record</span> <span class="n">records</span><span class="p">[</span><span class="n">MAX_RECORDS_LEN</span><span class="p">];</span>
+
+<span class="kt">uint16_t</span> <span class="n">record_ptr</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">saveCurrRecordToArray</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ControllerRecord</span> <span class="n">ctrl_record</span> <span class="o">=</span> <span class="n">getCtrlRecord</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">record_ptr</span> <span class="o">&lt;</span> <span class="n">MAX_RECORDS_LEN</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">timestamp_ms</span> <span class="o">=</span> <span class="n">elapsed_ms</span><span class="p">;</span>
+        <span class="n">records</span><span class="p">[</span><span class="n">record_ptr</span><span class="p">].</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span><span class="p">;</span>
+        <span class="n">record_ptr</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+		<span class="p">......</span>
+    <span class="c1">// While central is connected</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">central</span><span class="p">.</span><span class="n">connected</span><span class="p">())</span> <span class="p">{</span>
+          <span class="p">......</span>
+          <span class="n">curr_ms</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
+          <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="n">curr_ms</span> <span class="o">-</span> <span class="n">start_ms</span><span class="p">;</span>
+
+          <span class="n">distance</span> <span class="o">=</span> <span class="n">readDistance</span><span class="p">();</span> 
+          <span class="n">saveCurrRecordToArray</span><span class="p">();</span>
+          <span class="p">......</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And send the recored data to laptop over bluetooth:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">handleCommand</span><span class="p">()</span> <span class="p">{</span>
+  	<span class="p">......</span>
+  	<span class="k">switch</span> <span class="p">(</span><span class="n">cmd_type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">......</span>
+        <span class="k">case</span> <span class="n">GET_HISTORY_DATA</span><span class="p">:</span> <span class="p">{</span>
+          
+            <span class="k">const</span> <span class="n">Record</span> <span class="o">*</span><span class="n">records</span><span class="p">;</span>
+            <span class="kt">uint16_t</span> <span class="n">records_size</span> <span class="o">=</span> <span class="n">getHistoryRecords</span><span class="p">(</span><span class="o">&amp;</span><span class="n">records</span><span class="p">);</span>
+
+            <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+            <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">"Size of records array: "</span><span class="p">);</span>
+            <span class="n">tx_estring_value</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">records_size</span><span class="p">);</span>
+            <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">records_size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">putARecordToTxEstring</span><span class="p">(</span><span class="n">records</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+                <span class="n">tx_characteristic_string</span><span class="p">.</span><span class="n">writeValue</span><span class="p">(</span><span class="n">tx_estring_value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+            <span class="p">}</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="p">......</span>
+		<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>When the Distance Mode changes or the parameter inside <code class="language-plaintext highlighter-rouge">sensors[i].startContinuous(period_ms);</code> changes, the average of sensor reading intervals are subject to change. I tested several groups of data and list them in the tables below.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Distance Mode: Long</th>
+      <th>startContinuous(50)</th>
+      <th>startContinuous(100)</th>
+      <th>startContinuous(200)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Average Interval (ms):</td>
+      <td>92</td>
+      <td>92</td>
+      <td>186</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Distance Mode: Medium</th>
+      <th>startContinuous(33)</th>
+      <th>startContinuous(100)</th>
+      <th>startContinuous(200)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Average Interval (ms):</td>
+      <td>61</td>
+      <td>92</td>
+      <td>185</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Distance Mode: Short</th>
+      <th>startContinuous(20)</th>
+      <th>startContinuous(100)</th>
+      <th>startContinuous(200)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Average Interval (ms):</td>
+      <td>37</td>
+      <td>92</td>
+      <td>185</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We can conclude that there are 3 factors that limit ToF sensor speed:</p>
+
+<ul>
+  <li><strong>Frequency of the main loop</strong>: If their are too many code in the main loop, or some code block the running of the main loop function, the reading of ToF sensors will be delayed.</li>
+  <li><strong>Parameter in the sensor.startContinuous()</strong>: The smaller the parameter is, the faster the sensor reads, but there is a lower bound affected by distance mode.</li>
+  <li><strong>Tof sensor speed</strong>: When set to Short, sensor has the highest possible reading speed, when set to Long, sensor has the lowest possible reading speed.</li>
+</ul>
+
+<p>The minimal sensor reading interval is 37ms, which is 27Hz.</p>
+
 <h3 id="6-time-v-distance-include-graph-of-data-sent-over-bluetooth-2-sensors">6. Time v Distance: Include graph of data sent over bluetooth (2 sensors)</h3>
+
+<p><img src="/FastRobots/images/Lab3/2-distance.png" alt="2-distance" style="zoom:50%;" /></p>
 
 <h3 id="7-5000-discussion-on-infrared-transmission-based-sensors">7. (5000) Discussion on infrared transmission based sensors</h3>
 
-<h3 id="8-5000-sensitivity-of-sensors-to-colors-and-textures">8. (5000) Sensitivity of sensors to colors and textures</h3>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Lab3]]></summary></entry><entry><title type="html">Lab2</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html" rel="alternate" type="text/html" title="Lab2" /><published>2024-02-20T23:46:21-05:00</published><updated>2024-02-20T23:46:21-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html"><![CDATA[<h1 id="lab-2">Lab 2</h1>
+<p>Infrared (IR) distance sensors are a popular choice for many applications due to their non-contact nature, which makes them ideal for measuring distances without physically touching the object.</p>
+
+<p>There are different types of IR based sensors:</p>
+
+<ol>
+  <li><strong>Infrared Time-of-Flight (ToF) Sensors</strong>
+    <ul>
+      <li>Pros: High accuracy and precision; Immune to ambient light; Good range</li>
+      <li>Cons: High Cost; Sensitive to materials</li>
+    </ul>
+  </li>
+  <li><strong>Infrared Reflective Sensors</strong>
+    <ul>
+      <li>Pros: Cost-effective; Easy to integrate and use</li>
+      <li>Cons: Limited range; Sensitive to ambient light</li>
+    </ul>
+  </li>
+  <li><strong>Infrared Array Sensors</strong>
+    <ul>
+      <li>Pros: Spatial awareness</li>
+      <li>Cons: High complexity and cost</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="8-5000-sensitivity-of-sensors-to-colors-and-textures">8. (5000) Sensitivity of sensors to colors and textures</h3>
+
+<h4 id="principle-analysis">Principle Analysis</h4>
+
+<p>The design of the infrared depth sensor is based on the principle of Time of Flight (TOF), that is, the sensor emits the modulated near-infrared light, which is reflected after the object, and the sensor calculates the distance from the object by calculating the time difference or phase difference between the emission and reflection of the light.</p>
+
+<p><img src="/FastRobots/images/Lab3/tof-1.png" alt="tof-1" style="zoom: 33%;" /></p>
+
+<p>Because the light is infrared, not in the spectrum of visable light, the color of the reflection plane will not have a direct impact on the IR sensor.</p>
+
+<p>But if the plane is too smooth that it causes speccular reflection instead of diffuse reflection, it is very likely that the receivers will not detect any light from the smooth surface.</p>
+
+<p><img src="/FastRobots/images/Lab3/tof-2.png" alt="tof-2" style="zoom:50%;" /></p>
+
+<h4 id="colors">Colors</h4>
+
+<p>I tried 3 different colors: orange, blue and green. Below is the comparison:</p>
+
+<p><img src="/FastRobots/images/Lab3/colors.png" alt="colors" style="zoom:50%;" /></p>
+
+<p>We can see that the colors have little influence on the accuracy of the ToF sensors.</p>
+
+<h4 id="textures">Textures</h4>
+
+<p>I tried 3 different textures: white wall, glass (the screen of my iPad) and metal (the back panel of my iPad), and below is the distance sensor reading:</p>
+
+<p><img src="/FastRobots/images/Lab3/textures.png" alt="textures" style="zoom:50%;" /></p>
+
+<p>On the conditions of wall and metal, the ToF sensor works normally. Howver, when the reflection plane is glass, the accuracy of the ToF sensors drops sharply, which means the data of ToF sensor have large standard deviation, adding uncertainty to the data.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Prelab]]></summary></entry><entry><title type="html">Lab2</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html" rel="alternate" type="text/html" title="Lab2" /><published>2024-02-20T23:46:21-05:00</published><updated>2024-02-20T23:46:21-05:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/02/20/Lab2.html"><![CDATA[<h1 id="lab-2">Lab 2</h1>
 
 <h2 id="setup-the-imu">Setup the IMU</h2>
 
