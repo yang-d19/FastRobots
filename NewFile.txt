@@ -1,0 +1,59 @@
+
+
+
+
+
+
+Sensor range: 0 ~ 4000mm
+
+Set point: 304 mm
+
+
+
+control variable range?: -1000 ~ +1000
+
+map: -1000 ~ 0 -> -255 ~ -20
+
+
+
+When blocking = false, all test result are 2ms
+
+So all the tests below are blocking = true by default
+
+### Distance Mode: Long
+
+**Continous time interval: 50 **
+
++ 92 ms (92, 93, 92, 92, 93)
+
+**Continous time interval: 100**
+
++ 92ms (92, 93, 92, 93, 92)
+
+
+
+### Distance Mode: Medium
+
+**Continous time interval: 33**
+
++ 61ms (61, 61, 61, 61, 61)
+
+**Continous time interval: 100** 
+
++ 92ms (93, 92, 93)
+
+**Continous time interval: 200** 
+
++ 185ms (185, 184, 185)
+
+
+
+### Distance Mode: Short
+
+**Continous time interval: 20**
+
++ 37ms (37, 37, 37)
+
+**Continous time interval: 100**
+
++ 92ms (94, 92, 92)

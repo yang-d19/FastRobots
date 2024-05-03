@@ -4,66 +4,167 @@ title:  "Lab5"
 categories: jekyll update
 ---
 
+# Lab5
+
+## Prelab
+
+### 1. Clearly describe how you handle sending and receiving data over Bluetooth
+
+In my code, I record the state of the robot in every loop, including timestamp in millisecond, yaw angle, setpoint of yaw angle and the controller value of both side drivers.
+
+During the auto running process where the robot tries to maintain the given status, the transmission over bluetooth is forbiddened to ensure the high frequency of controll loop.
+
+When the controlling process is over, user can send the command "GET_HISTORY_DATA" over bluetooth which will notify the robot to send all of its history records to the laptop over bluetooth. The jupyter server running on the laptop will use a callback function to deal with the history records, then parse and store them.
+
+Finally, I use matplotlib to visualize the data, which can give us a better view of the system.
+
+### 2. Consider adding code snippets as necessary to showcase how you implemented this on Arduino and Python
+
+#### Arduino
+
+In the loop() function,
+
+```c++
+if (auto_running) {
+    if (!prev_auto_running) {
+      ...
+    }
+    else {
+        // calculate elapsed time only when auto running
+        elapsed_ms = curr_ms - start_ms;
+      
+        distance = readDistance(0); 
+        gyr_z = readGyrZ();
+        yaw -= gyr_z * (curr_ms - prev_ms) / 1000.0;
+      
+        // keepDistanceToWall(goal_distance, distance);
+        keepYaw(goal_yaw, (int16_t)yaw);
+      
+        // save current record to array
+        saveCurrRecordToArray();
+    }
+}
+```
+
+I read the distance and gyroscope data in every loop when the robot is in `auto_running` state and save current record to an array.
+
+```c++
+void saveCurrRecordToArray() {
+    ControllerRecord ctrl_record = getCtrlRecord();
+    if (record_ptr < MAX_RECORDS_LEN) {
+        records[record_ptr].timestamp_ms = elapsed_ms;
+        records[record_ptr].yaw = yaw;
+        records[record_ptr].setpoint_yaw = goal_yaw;
+      	...
+        record_ptr++;
+    }
+}
+```
+
+In the `handleCommand()` function, I add the code to deal with `SEND_HISTORY_DATA` command.
+
+```c++
+case GET_HISTORY_DATA: {
+    // forbidden transfering history data when robot is auto running
+    if (auto_running) {
+        tx_estring_value.append("Failed: auto running, try later");
+        tx_characteristic_string.writeValue(tx_estring_value.c_str());
+        break;
+    }
+
+    const Record *records;
+    uint16_t records_size = getHistoryRecords(&records);
+    tx_estring_value.clear();
+  	...
+
+    for (int i = 0; i < records_size; i++) {
+      	// send all history records
+        putARecordToTxEstring(records + i, i);
+        tx_characteristic_string.writeValue(tx_estring_value.c_str());
+    }
+    break;
+}
+```
+
+#### Python
+
+`parse_str2data` is used to parse the string data into parts that contain the original data.
+
+```python
+def parse_str2data(ss):
+    idx, data = ss.split(':')
+    timestamp, distance, setpoint_distance, yaw, setpoint_yaw, \
+    	left_ctrl, right_ctrl, left_pwm, right_pwm = data.split('|')
+    ...
+    timestamps_ms.append(int(timestamp))
+    distances.append(int(distance))
+    setpoint_yaws.append(int(setpoint_yaw))
+		...
+    right_pwms.append(int(right_pwm))
+```
+
+The above function is registered as a callback function to handle RX_STRING
+
+```python
+def notification_handler(uuid, byte_array):
+    data_str = ble.bytearray_to_string(byte_array)
+    parse_str2data(data_str)
+ble.start_notify(ble.uuid['RX_STRING'], notification_handler)
+```
+
+Finally the graph is drawed
+
+```python
+def plot_graph():
+    timestamps_s = [t / 1000.0 for t in timestamps_ms]
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(6, 7))  
+    
+    ax1.plot(timestamps_s, setpoint_yaws, label='Setpoints', color='red')
+    ax1.set_title('Setpoints Over Time')
+    ax1.set_ylabel('Setpoints')
+    ax1.legend()
+    
+    ax2.plot(timestamps_s, yaws, label='Yaws', color='blue')
+    ax2.set_title('Yaws Over Time')
+    ax2.set_ylabel('Yaws')
+    ax2.legend()
+    
+    ax3.plot(timestamps_s, right_controls, label='Controls', color='green')
+    ax3.set_title('Right Controls Over Time')
+    ax3.set_ylabel('Right Controls')
+    ax3.set_xlabel('Time') 
+    ax3.legend()
+    
+    plt.tight_layout()
+    plt.show()
+```
+
+## Lab Tasks
+
+### 1. P/I/D discussion (Kp/Ki/Kd values chosen, why you chose a combination of controllers, etc.)
+
+```c++
+float Kp = 1.5;
+float Ki = 0.0;
+float Kd = 4;
+```
+
+Kp is responsible for keep 
 
 
 
+If only use proportional controller, there will be large overshoot. So I introduced Dirivative controller to eliminiate the oscilation.
+
+### 2. Range/Sampling time discussion
 
 
 
+### 3. Graphs, code, videos, images, discussion of reaching task goal
 
 
 
+### 4. Graph data should include Tof vs time and Motor input vs time (and whatever helps with debugging)
 
-Sensor range: 0 ~ 4000mm
+<img src="../../../../Library/Application Support/typora-user-images/image-20240502120719574.png" alt="image-20240502120719574" style="zoom:50%;" />
 
-Set point: 304 mm
-
-
-
-control variable range?: -1000 ~ +1000
-
-map: -1000 ~ 0 -> -255 ~ -20
-
-
-
-When blocking = false, all test result are 2ms
-
-So all the tests below are blocking = true by default
-
-### Distance Mode: Long
-
-**Continous time interval: 50 **
-
-+ 92 ms (92, 93, 92, 92, 93)
-
-**Continous time interval: 100**
-
-+ 92ms (92, 93, 92, 93, 92)
-
-
-
-### Distance Mode: Medium
-
-**Continous time interval: 33**
-
-+ 61ms (61, 61, 61, 61, 61)
-
-**Continous time interval: 100** 
-
-+ 92ms (93, 92, 93)
-
-**Continous time interval: 200** 
-
-+ 185ms (185, 184, 185)
-
-
-
-### Distance Mode: Short
-
-**Continous time interval: 20**
-
-+ 37ms (37, 37, 37)
-
-**Continous time interval: 100**
-
-+ 92ms (94, 92, 92)
+### 5. (5000) Wind-up implementation and discussion
