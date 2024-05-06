@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lab10 | Fast Robots 2024 Spring</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Lab10" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction" />
+<meta property="og:description" content="Introduction" />
+<link rel="canonical" href="http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html" />
+<meta property="og:url" content="http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html" />
+<meta property="og:site_name" content="Fast Robots 2024 Spring" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-05-01T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lab10" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-05-01T00:00:00-04:00","datePublished":"2024-05-01T00:00:00-04:00","description":"Introduction","headline":"Lab10","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FastRobots/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FastRobots/feed.xml" title="Fast Robots 2024 Spring" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FastRobots/">Fast Robots 2024 Spring</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FastRobots/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lab10</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-05-01T00:00:00-04:00" itemprop="datePublished">May 1, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="introduction">Introduction</h2>
+
+<p>In this lab, we implemented grid localization using Bayes filter. The robot is simulated following a preplanned trajectory and we determine where the robot is using Bayes filter at every iteration.</p>
+
+<p>The structure Bayes filter is shown below:</p>
+
+<p><img src="/FastRobots/images/Lab10/bayes-formula.png" alt="bayes-formula" style="zoom: 33%;" /></p>
+
+<p>In order to use Bayes filter to increase the accuracy, we need the following parts:</p>
+
+<ul>
+  <li><strong>State Space</strong>: The size in this lab is 12 x 9 x 18, 12 and 9 are the size of the plane, 18 is the size of angular space</li>
+  <li><strong>Belief</strong>: The belief of the robot at a given state</li>
+  <li><strong>Action Model</strong>: The probability that the robot arrive at state x’ from previous state x given input u</li>
+  <li><strong>Sensor Model</strong>: The probability that the robot has sensor reading z from state x</li>
+</ul>
+
+<p>The prediction belief is calculated by prior belief and action model at the entire state space. Then it is corrected and normalized by the sensor model.</p>
+
+<h2 id="code-implementation">Code Implementation</h2>
+
+<h3 id="compute-control">Compute Control</h3>
+
+<p>It calculates <code class="language-plaintext highlighter-rouge">u</code> based on a current and previous position. The principle is ilustrated in the graph below:</p>
+
+<p><img src="/FastRobots/images/Lab10/compute control.png" alt="compute control" style="zoom: 40%;" /></p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">def</span> <span class="n">compute_control</span><span class="p">(</span><span class="n">cur_pose</span><span class="p">,</span> <span class="n">prev_pose</span><span class="p">)</span><span class="o">:</span>
+
+    <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_yaw</span> <span class="o">=</span> <span class="n">cur_pose</span>
+    <span class="n">prev_x</span><span class="p">,</span> <span class="n">prev_y</span><span class="p">,</span> <span class="n">prev_yaw</span> <span class="o">=</span> <span class="n">prev_pose</span>
+
+    <span class="n">delta_x</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">-</span> <span class="n">prev_x</span>
+    <span class="n">delta_y</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">-</span> <span class="n">prev_y</span>
+
+    <span class="n">delta_rot_1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">delta_y</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">))</span> <span class="o">-</span> <span class="n">prev_yaw</span>
+    <span class="n">delta_trans</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">delta_y</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+    <span class="n">delta_rot_2</span> <span class="o">=</span> <span class="n">cur_yaw</span> <span class="o">-</span> <span class="n">prev_yaw</span> <span class="o">-</span> <span class="n">delta_rot_1</span>
+
+    <span class="k">return</span> <span class="n">delta_rot_1</span><span class="p">,</span> <span class="n">delta_trans</span><span class="p">,</span> <span class="n">delta_rot_2</span>
+</code></pre></div></div>
+
+<h3 id="odometry-motion-model">Odometry Motion Model</h3>
+
+<p>This describes the likelihood of achieving a current position given a control input and a previous position. <code class="language-plaintext highlighter-rouge">u</code> represents the actual control input calculated from odometry sensor reading. <code class="language-plaintext highlighter-rouge">curr_pose</code> and <code class="language-plaintext highlighter-rouge">prev_pose</code> are utilized to calculate <code class="language-plaintext highlighter-rouge">u_compute</code> for proposed control input.</p>
+
+<p>We model the probability of the kinematic model of the Gaussian distribution.</p>
+
+<ul>
+  <li>mu: mean value</li>
+  <li>sigma: degree of dispersion</li>
+  <li>x: the value that the probability is calculated</li>
+</ul>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">def</span> <span class="n">odom_motion_model</span><span class="p">(</span><span class="n">cur_pose</span><span class="p">,</span> <span class="n">prev_pose</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span><span class="o">:</span>
+
+    <span class="n">u_compute</span> <span class="o">=</span> <span class="n">compute_control</span><span class="p">(</span><span class="n">cur_pose</span><span class="p">,</span> <span class="n">prev_pose</span><span class="p">)</span>
+    
+    <span class="n">rot1_val</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">normalize_angle</span><span class="p">(</span><span class="n">u_compute</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">trans1_val</span> <span class="o">=</span> <span class="n">u_compute</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rot2_val</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">normalize_angle</span><span class="p">(</span><span class="n">u_compute</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">rot1_mu</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">normalize_angle</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">trans1_mu</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rot2_mu</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">normalize_angle</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">prob_rot1</span>   <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">rot1_val</span><span class="p">,</span> <span class="n">rot1_mu</span><span class="p">,</span> <span class="n">loc</span><span class="p">.</span><span class="n">odom_rot_sigma</span><span class="p">)</span>
+    <span class="n">prob_trans1</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">trans1_val</span><span class="p">,</span> <span class="n">trans1_mu</span><span class="p">,</span> <span class="n">loc</span><span class="p">.</span><span class="n">odom_trans_sigma</span><span class="p">)</span>
+    <span class="n">prob_rot2</span>   <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">rot2_val</span><span class="p">,</span> <span class="n">rot2_mu</span><span class="p">,</span> <span class="n">loc</span><span class="p">.</span><span class="n">odom_rot_sigma</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">prob_rot1</span> <span class="o">*</span> <span class="n">prob_trans1</span> <span class="o">*</span> <span class="n">prob_rot2</span>
+</code></pre></div></div>
+
+<h3 id="prediction-step">Prediction Step</h3>
+
+<p>The prediction step requires two inputs: <code class="language-plaintext highlighter-rouge">cur_odom</code> and <code class="language-plaintext highlighter-rouge">prev_odom</code>, which represent the current and previous positions of the robot as detected by sensors. These positions are used to compute the control input <code class="language-plaintext highlighter-rouge">u</code>.</p>
+
+<p>We have two groups of 3 layers loop in this function. The outside 3 layers loop traverse all the previous states. The inside 3 layers loop traverse all the current states. The transition probability is calculated by the previous state and current state.</p>
+
+<p>Every prediction belief is the summation of all prior belief times transition probability. In order to accelerate the process, we only calculate the states that <code class="language-plaintext highlighter-rouge">loc.bel</code> (prior belief) is not zero.</p>
+
+<p>Finally we normalize <code class="language-plaintext highlighter-rouge">loc.bel_bar</code> to make sure that the probability distribution add up to one.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">def</span> <span class="n">prediction_step</span><span class="p">(</span><span class="n">cur_odom</span><span class="p">,</span> <span class="n">prev_odom</span><span class="p">)</span><span class="o">:</span>
+    <span class="s">""" Prediction step of the Bayes Filter.</span><span class="err">
+</span><span class="s">    """</span>
+    <span class="cp"># get the control value given curr odom and prev odom
+</span>    <span class="n">u</span> <span class="o">=</span> <span class="n">compute_control</span><span class="p">(</span> <span class="n">cur_odom</span><span class="p">,</span> <span class="n">prev_odom</span> <span class="p">)</span>
+
+    <span class="cp"># init bel bar to all zeroes
+</span>    <span class="n">bel_bar_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_X</span><span class="p">,</span> <span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_Y</span><span class="p">,</span> <span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_A</span><span class="p">))</span>
+
+    <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.0001</span>
+    
+    <span class="k">for</span> <span class="n">prev_x</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_X</span><span class="p">)</span><span class="o">:</span>
+        <span class="k">for</span> <span class="n">prev_y</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_Y</span><span class="p">)</span><span class="o">:</span>
+            <span class="k">for</span> <span class="n">prev_yaw</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_A</span><span class="p">)</span><span class="o">:</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">loc</span><span class="p">.</span><span class="n">bel</span><span class="p">[</span><span class="n">prev_x</span><span class="p">,</span> <span class="n">prev_y</span><span class="p">,</span> <span class="n">prev_yaw</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)</span><span class="o">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">cur_x</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_X</span><span class="p">)</span><span class="o">:</span>
+                    <span class="k">for</span> <span class="n">cur_y</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_Y</span><span class="p">)</span><span class="o">:</span>
+                        <span class="k">for</span> <span class="n">cur_yaw</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_A</span><span class="p">)</span><span class="o">:</span>
+                            <span class="n">cur_pose</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">from_map</span><span class="p">(</span><span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_yaw</span><span class="p">)</span>
+                            <span class="n">prev_pose</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">from_map</span><span class="p">(</span><span class="n">prev_x</span><span class="p">,</span> <span class="n">prev_y</span><span class="p">,</span> <span class="n">prev_yaw</span><span class="p">)</span>
+                            <span class="n">transition_prob</span> <span class="o">=</span> <span class="n">odom_motion_model</span><span class="p">(</span><span class="n">cur_pose</span><span class="p">,</span> <span class="n">prev_pose</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+                            <span class="n">bel_prior</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">bel</span><span class="p">[</span><span class="n">prev_x</span><span class="p">,</span> <span class="n">prev_y</span><span class="p">,</span> <span class="n">prev_yaw</span><span class="p">]</span>
+                            <span class="n">bel_bar_tmp</span><span class="p">[</span><span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_yaw</span><span class="p">]</span> <span class="o">+=</span> <span class="n">transition_prob</span> <span class="o">*</span> <span class="n">bel_prior</span>
+    
+    <span class="cp"># normalize to 1
+</span>    <span class="n">loc</span><span class="p">.</span><span class="n">bel_bar</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">true_divide</span><span class="p">(</span><span class="n">bel_bar_tmp</span><span class="p">,</span> <span class="n">np</span><span class="p">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bel_bar_tmp</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h3 id="sensor-model">Sensor Model</h3>
+
+<p>The sensor model computes the probability that the sensor reading is correct given a state. It requires to return a 1D array of size 18 which is the likelihoods of each individual sensor measurement.</p>
+
+<p>Like the motion model, we also model the sensor model as gaussian distribution. The input of gaussian function is the current sensor measurements that we took every 20 degrees during the turing around, which are stored in <code class="language-plaintext highlighter-rouge">loc.obs_range_data</code>.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">def</span> <span class="n">sensor_model</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span><span class="o">:</span>
+    <span class="s">""" This is the equivalent of p(z|x).</span><span class="err">
+</span><span class="s">    """</span>
+
+    <span class="n">prob_array</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">OBS_PER_CELL</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">prob_array</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">loc</span><span class="p">.</span><span class="n">obs_range_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">obs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">loc</span><span class="p">.</span><span class="n">sensor_sigma</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">prob_array</span>
+</code></pre></div></div>
+
+<h3 id="update-step">Update Step</h3>
+
+<p>We dpdate the probabilities in <code class="language-plaintext highlighter-rouge">loc.bel</code> based on <code class="language-plaintext highlighter-rouge">loc.bel_bar</code> and the sensor model. It combines all the above functions.</p>
+
+<p>we iterate through all the possible current poses of the robot by 3 layers of loops. For every possible pose, we find the prediction belief and multiply that by the measurement probability. Then we get the post probability.</p>
+
+<p>Finally, we need to normalize <code class="language-plaintext highlighter-rouge">loc.bel</code> to make sure all its elements add up to one.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">def</span> <span class="n">update_step</span><span class="p">()</span><span class="o">:</span>
+    <span class="s">""" Update step of the Bayes Filter.</span><span class="err">
+</span><span class="s">    """</span>
+    <span class="k">for</span> <span class="n">cur_x</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_X</span><span class="p">)</span><span class="o">:</span>
+        <span class="k">for</span> <span class="n">cur_y</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_Y</span><span class="p">)</span><span class="o">:</span>
+            <span class="k">for</span> <span class="n">cur_yaw</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">mapper</span><span class="p">.</span><span class="n">MAX_CELLS_A</span><span class="p">)</span><span class="o">:</span>
+                <span class="n">bel_bar</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">bel_bar</span><span class="p">[</span><span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_yaw</span><span class="p">]</span>
+                <span class="n">obs</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_yaw</span><span class="p">)</span> 
+
+                <span class="n">measure_probs</span> <span class="o">=</span> <span class="n">sensor_model</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                <span class="n">measure_prob_mul</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">prod</span><span class="p">(</span><span class="n">measure_probs</span><span class="p">)</span>
+                
+                <span class="n">loc</span><span class="p">.</span><span class="n">bel</span><span class="p">[</span><span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_yaw</span><span class="p">]</span> <span class="o">=</span> <span class="n">measure_prob_mul</span> <span class="o">*</span> <span class="n">bel_bar</span>
+    
+    <span class="cp"># normalize to 1
+</span>    <span class="n">loc</span><span class="p">.</span><span class="n">bel</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">true_divide</span><span class="p">(</span><span class="n">loc</span><span class="p">.</span><span class="n">bel</span><span class="p">,</span> <span class="n">np</span><span class="p">.</span><span class="n">sum</span><span class="p">(</span><span class="n">loc</span><span class="p">.</span><span class="n">bel</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="demonstration">Demonstration</h2>
+
+<p>Green trajectory is ground truth; red trajectory is sensor reading; blue trajectory is calculated by Bayes filter.</p>
+
+<p><img src="/FastRobots/images/Lab10/map.png" alt="map" style="zoom:40%;" /></p>
+
+<p>We can also see the distribution of probabilities that different grids have.</p>
+
+<p><img src="/FastRobots/images/Lab10/belif.png" alt="belif" style="zoom:40%;" /></p>
+
+<p>This video demonstrate the whole process of how bayes filter works.</p>
+
+<iframe width="1727" height="847" src="https://www.youtube.com/embed/w9LM0d6LvbY" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+  </div><a class="u-url" href="/FastRobots/jekyll/update/2024/05/01/Lab10.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FastRobots/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fast Robots 2024 Spring</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Fast Robots 2024 Spring</li><li><a class="u-email" href="mailto:dy297@cornell.edu">dy297@cornell.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/yang-d19"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#github"></use></svg> <span class="username">yang-d19</span></a></li><li><a href="https://www.linkedin.com/in/ding-yang-829248219"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">ding-yang-829248219</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
