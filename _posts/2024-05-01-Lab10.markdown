@@ -1,10 +1,16 @@
-# Introduction
+---
+layout: post
+title:  "Lab10"
+categories: jekyll update
+---
+
+## Introduction
 
 In this lab, we implemented grid localization using Bayes filter. The robot is simulated following a preplanned trajectory and we determine where the robot is using Bayes filter at every iteration.
 
 The structure Bayes filter is shown below:
 
-<img src="../images/Lab10/bayes-formula.png" alt="bayes-formula" style="zoom: 33%;" />
+<img src="/FastRobots/images/Lab10/bayes-formula.png" alt="bayes-formula" style="zoom: 33%;" />
 
 In order to use Bayes filter to increase the accuracy, we need the following parts:
 
@@ -15,13 +21,13 @@ In order to use Bayes filter to increase the accuracy, we need the following par
 
 The prediction belief is calculated by prior belief and action model at the entire state space. Then it is corrected and normalized by the sensor model.
 
-# Code Implementation
+## Code Implementation
 
-## Compute Control
+### Compute Control
 
 It calculates `u` based on a current and previous position. The principle is ilustrated in the graph below:
 
-<img src="../images/Lab10/compute control.png" alt="compute control" style="zoom: 40%;" />
+<img src="/FastRobots/images/Lab10/compute control.png" alt="compute control" style="zoom: 40%;" />
 
 ```c++
 def compute_control(cur_pose, prev_pose):
@@ -39,9 +45,7 @@ def compute_control(cur_pose, prev_pose):
     return delta_rot_1, delta_trans, delta_rot_2
 ```
 
-
-
-## Odometry Motion Model
+### Odometry Motion Model
 
 
 This describes the likelihood of achieving a current position given a control input and a previous position. `u` represents the actual control input calculated from odometry sensor reading. `curr_pose` and `prev_pose` are utilized to calculate `u_compute` for proposed control input.
@@ -72,7 +76,7 @@ def odom_motion_model(cur_pose, prev_pose, u):
     return prob_rot1 * prob_trans1 * prob_rot2
 ```
 
-## Prediction Step
+### Prediction Step
 
 The prediction step requires two inputs: `cur_odom` and `prev_odom`, which represent the current and previous positions of the robot as detected by sensors. These positions are used to compute the control input `u`.
 
@@ -115,7 +119,7 @@ def prediction_step(cur_odom, prev_odom):
     loc.bel_bar = np.true_divide(bel_bar_tmp, np.sum(bel_bar_tmp))
 ```
 
-## Sensor Model
+### Sensor Model
 
 The sensor model computes the probability that the sensor reading is correct given a state. It requires to return a 1D array of size 18 which is the likelihoods of each individual sensor measurement.
 
@@ -132,7 +136,7 @@ def sensor_model(obs):
     return prob_array
 ```
 
-## Update Step
+### Update Step
 
 We dpdate the probabilities in `loc.bel` based on `loc.bel_bar` and the sensor model. It combines all the above functions.
 
@@ -159,15 +163,15 @@ def update_step():
     loc.bel = np.true_divide(loc.bel, np.sum(loc.bel))
 ```
 
-# Demonstration
+## Demonstration
 
 Green trajectory is ground truth; red trajectory is sensor reading; blue trajectory is calculated by Bayes filter.
 
-<img src="../images/Lab10/map.png" alt="map" style="zoom:40%;" />
+<img src="/FastRobots/images/Lab10/map.png" alt="map" style="zoom:40%;" />
 
 We can also see the distribution of probabilities that different grids have.
 
-<img src="../images/Lab10/belif.png" alt="belif" style="zoom:40%;" />
+<img src="/FastRobots/images/Lab10/belif.png" alt="belif" style="zoom:40%;" />
 
 This video demonstrate the whole process of how bayes filter works.
 
