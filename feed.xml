@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-05-07T00:19:05-04:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab10</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html" rel="alternate" type="text/html" title="Lab10" /><published>2024-05-01T00:00:00-04:00</published><updated>2024-05-01T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/FastRobots/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/FastRobots/" rel="alternate" type="text/html" /><updated>2024-05-07T12:06:01-04:00</updated><id>http://localhost:4000/FastRobots/feed.xml</id><title type="html">Fast Robots 2024 Spring</title><subtitle>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</subtitle><entry><title type="html">Lab10</title><link href="http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html" rel="alternate" type="text/html" title="Lab10" /><published>2024-05-01T00:00:00-04:00</published><updated>2024-05-01T00:00:00-04:00</updated><id>http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10</id><content type="html" xml:base="http://localhost:4000/FastRobots/jekyll/update/2024/05/01/Lab10.html"><![CDATA[<h2 id="introduction">Introduction</h2>
 
 <p>In this lab, we implemented grid localization using Bayes filter. The robot is simulated following a preplanned trajectory and we determine where the robot is using Bayes filter at every iteration.</p>
 
@@ -177,30 +177,45 @@
 
 <p>Low pass filter:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">float</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">history_gyr</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
 
-<blockquote>
-  <p>You can also consider adjusting the integration time of the TOF sensor, using <code class="language-plaintext highlighter-rouge">proximitySensor.setProxIntegrationTime(4); //A value of 1 to 8 is valid</code>. Note that this function is only available in the <a href="https://github.com/pololu/vl53l0x-arduino">Tof Pololu library</a>.</p>
-</blockquote>
-
-<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">proximitySensor</span><span class="p">.</span><span class="n">setProxIntegrationTime</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="kt">float</span> <span class="nf">LPF_gyr</span><span class="p">(</span><span class="kt">float</span> <span class="n">curr_gyr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">float</span> <span class="n">filtered_gyr</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">curr_gyr</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">history_gyr</span><span class="p">;</span>
+    <span class="n">history_gyr</span> <span class="o">=</span> <span class="n">filtered_gyr</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">filtered_gyr</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
 <blockquote>
   <p>One way to make the robot spin even slower is to block one set of wheels while turning the others. This means that your robot is now driving in a slight circle (rather than on-axis), which will make post-processing of data slightly more difficult, but allow you to capture data more reliably.</p>
 </blockquote>
 
-<p>I didn’t use this method.</p>
+<p>I didn’t use this method. Instead, I always let the left wheel and right wheel spin under opposite control values.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int16_t</span><span class="p">,</span> <span class="kt">int16_t</span><span class="o">&gt;</span> <span class="n">angle_speed_pid</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="o">-</span><span class="n">control</span><span class="p">,</span> <span class="n">control</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <blockquote>
   <p>Please quantify and/or use graphs to document that your PID controller works well, and upload a video that shows how your robot turns.</p>
 </blockquote>
 
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">yaw</span> <span class="o">&gt;</span> <span class="mi">400</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">stop</span><span class="p">();</span>
+    <span class="n">auto_running</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">keepYawSpeed</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="n">filtered_gyr</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><img src="/FastRobots/images/Lab9/ttx.png" alt="ttx" style="zoom:40%;" /></p>
+
 <blockquote>
   <p>Given the slowest speed you are able to achieve, how much does the orientation of the robot change during a single measurement? If you were spinning in the middle of a 4x4m2 empty, square room, what kind of accuracy can you expect?</p>
 </blockquote>
 
-<p>About 5 degree</p>
+<p>About 5 degrees</p>
 
 <h2 id="read-data">Read data</h2>
 
