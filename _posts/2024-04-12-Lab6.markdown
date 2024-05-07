@@ -169,7 +169,19 @@ std::pair<int16_t, int16_t> angle_pid(int16_t error) {
 
 `Ki` eliminate the cumulative error
 
+P controller is the most basic controller, but using proportional control itself will lead to high oscillation. So I add the D controller to prevent overshoot. Now that PD controller can handle most situations, but the variable that we try to control may vary a little from the expected value, the I controller solves that. It adds error of all time iterations together in order to magnify the influence of cumulative error to the controller.
+
+So I choose a combination of all three of them to be a PID controller.
+
 ### 2. Range/Sampling time discussion
+
+#### Range
+
+The default range for the Sparkfun 9DoF IMU is +-250 degrees per second, which is enough for this lab, as the maximum rotation speed is no more than 150 dps.
+
+The smaller sensor range has better accuracy, so I use the default `dps250` scale.
+
+#### Sampling Time
 
 The robot returns an array of history data that has size 842 over 12 seconds:
 
@@ -180,9 +192,9 @@ Size of records array: 842
 """
 ```
 
-so the approximate sampling rate is 842/12s = 70Hz
+so the approximate sampling rate is 842/12s = 70Hz.
 
-### 3. Graphs, code, videos, images, discussion of reaching task goal
+### 3. Graphs, code, videos, images, discussion of reaching task goal (Graph data should at least include theta vs time)
 
 #### Graphs
 
@@ -199,3 +211,27 @@ and this,
 ### 4. (5000) Wind-up implementation and discussion
 
 There is a limit set for `angle_var.integral` so that it will not go extremely high and increase the oscillation.
+
+Add the upper and lower bound of integrator and prevent the problem:
+
+```c++
+const int INTEG_BOUND = 200;
+
+int16_t control = pos_param.Kp * error + pos_param.Kd * (error - prev_error) + Ki * angle_var.integral;
+
+angle_var.integral += error;
+if (angle_var.intergral > INTEG_BOUND) {
+  	angle_var.integral = INTEG_BOUND;
+}
+else if (angle_var.integral < -INTEG_BOUND) {
+		angle_var.integral = -INTEG_BOUND;
+}
+
+if (control >= MAX_CONTROL) control = MAX_CONTROL;
+if (control <= MIN_CONTROL) control = MIN_CONTROL;
+prev_error = error;
+```
+
+The wind-up protection is important, because if the robot was prevented from getting close to the goal yaw angle by some outside force, the integral term will continue accumulating. It will get extremely large or even overflow after a period of time, which will cause problems.
+
+With this protection, the intergal term can be kept within a reasonable range, and can be lowered quickly to correct accumulated errors when the robot rotates without resistance.
