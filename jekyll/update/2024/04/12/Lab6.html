@@ -205,7 +205,19 @@
 
 <p><code class="language-plaintext highlighter-rouge">Ki</code> eliminate the cumulative error</p>
 
+<p>P controller is the most basic controller, but using proportional control itself will lead to high oscillation. So I add the D controller to prevent overshoot. Now that PD controller can handle most situations, but the variable that we try to control may vary a little from the expected value, the I controller solves that. It adds error of all time iterations together in order to magnify the influence of cumulative error to the controller.</p>
+
+<p>So I choose a combination of all three of them to be a PID controller.</p>
+
 <h3 id="2-rangesampling-time-discussion">2. Range/Sampling time discussion</h3>
+
+<h4 id="range">Range</h4>
+
+<p>The default range for the Sparkfun 9DoF IMU is +-250 degrees per second, which is enough for this lab, as the maximum rotation speed is no more than 150 dps.</p>
+
+<p>The smaller sensor range has better accuracy, so I use the default <code class="language-plaintext highlighter-rouge">dps250</code> scale.</p>
+
+<h4 id="sampling-time">Sampling Time</h4>
 
 <p>The robot returns an array of history data that has size 842 over 12 seconds:</p>
 
@@ -215,13 +227,13 @@ Size of records array: 842
 </span><span class="sh">"""</span>
 </code></pre></div></div>
 
-<p>so the approximate sampling rate is 842/12s = 70Hz</p>
+<p>so the approximate sampling rate is 842/12s = 70Hz.</p>
 
-<h3 id="3-graphs-code-videos-images-discussion-of-reaching-task-goal">3. Graphs, code, videos, images, discussion of reaching task goal</h3>
+<h3 id="3-graphs-code-videos-images-discussion-of-reaching-task-goal-graph-data-should-at-least-include-theta-vs-time">3. Graphs, code, videos, images, discussion of reaching task goal (Graph data should at least include theta vs time)</h3>
 
 <h4 id="graphs">Graphs</h4>
 
-<p><img src="/FastRobots/images/Lab6/3plots.png" alt="3plots" style="zoom:50%;" /></p>
+<p><img src="/FastRobots/images/Lab6/3plots.png" alt="3plots" style="zoom:60%;" /></p>
 
 <h4 id="videos">Videos</h4>
 
@@ -234,6 +246,29 @@ Size of records array: 842
 <h3 id="4-5000-wind-up-implementation-and-discussion">4. (5000) Wind-up implementation and discussion</h3>
 
 <p>There is a limit set for <code class="language-plaintext highlighter-rouge">angle_var.integral</code> so that it will not go extremely high and increase the oscillation.</p>
+
+<p>Add the upper and lower bound of integrator and prevent the problem:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">int</span> <span class="n">INTEG_BOUND</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+
+<span class="kt">int16_t</span> <span class="n">control</span> <span class="o">=</span> <span class="n">pos_param</span><span class="p">.</span><span class="n">Kp</span> <span class="o">*</span> <span class="n">error</span> <span class="o">+</span> <span class="n">pos_param</span><span class="p">.</span><span class="n">Kd</span> <span class="o">*</span> <span class="p">(</span><span class="n">error</span> <span class="o">-</span> <span class="n">prev_error</span><span class="p">)</span> <span class="o">+</span> <span class="n">Ki</span> <span class="o">*</span> <span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span><span class="p">;</span>
+
+<span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span> <span class="o">+=</span> <span class="n">error</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">angle_var</span><span class="p">.</span><span class="n">intergral</span> <span class="o">&gt;</span> <span class="n">INTEG_BOUND</span><span class="p">)</span> <span class="p">{</span>
+  	<span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span> <span class="o">=</span> <span class="n">INTEG_BOUND</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">INTEG_BOUND</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">angle_var</span><span class="p">.</span><span class="n">integral</span> <span class="o">=</span> <span class="o">-</span><span class="n">INTEG_BOUND</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&gt;=</span> <span class="n">MAX_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MAX_CONTROL</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">control</span> <span class="o">&lt;=</span> <span class="n">MIN_CONTROL</span><span class="p">)</span> <span class="n">control</span> <span class="o">=</span> <span class="n">MIN_CONTROL</span><span class="p">;</span>
+<span class="n">prev_error</span> <span class="o">=</span> <span class="n">error</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The wind-up protection is important, because if the robot was prevented from getting close to the goal yaw angle by some outside force, the integral term will continue accumulating. It will get extremely large or even overflow after a period of time, which will cause problems.</p>
+
+<p>With this protection, the intergal term can be kept within a reasonable range, and can be lowered quickly to correct accumulated errors when the robot rotates without resistance.</p>
 
   </div><a class="u-url" href="/FastRobots/jekyll/update/2024/04/12/Lab6.html" hidden></a>
 </article>
