@@ -198,7 +198,7 @@ so the approximate sampling rate is 842/12s = 70Hz.
 
 #### Graphs
 
-<img src="/FastRobots/images/Lab6/3plots.png" alt="3plots" style="zoom:50%;" />
+<img src="/FastRobots/images/Lab6/3plots.png" alt="3plots" style="zoom:60%;" />
 
 #### Videos
 

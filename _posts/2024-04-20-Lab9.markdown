@@ -12,32 +12,42 @@ categories: jekyll update
 
 Low pass filter:
 
-```
-```
-
-
-
-> You can also consider adjusting the integration time of the TOF sensor, using `proximitySensor.setProxIntegrationTime(4); //A value of 1 to 8 is valid`. Note that this function is only available in the [Tof Pololu library](https://github.com/pololu/vl53l0x-arduino).
-
 ```c++
-proximitySensor.setProxIntegrationTime(4);
+const float alpha = 0.1;
+float history_gyr = 0.0;
+
+float LPF_gyr(float curr_gyr) {
+    float filtered_gyr = alpha * curr_gyr + (1 - alpha) * history_gyr;
+    history_gyr = filtered_gyr;
+    return filtered_gyr;
+}
 ```
-
-
 
 > One way to make the robot spin even slower is to block one set of wheels while turning the others. This means that your robot is now driving in a slight circle (rather than on-axis), which will make post-processing of data slightly more difficult, but allow you to capture data more reliably.
 
-I didn't use this method.
+I didn't use this method. Instead, I always let the left wheel and right wheel spin under opposite control values.
+
+```c++
+std::pair<int16_t, int16_t> angle_speed_pid(int16_t error) {
+		return std::make_pair(-control, control);
+}
+```
 
 > Please quantify and/or use graphs to document that your PID controller works well, and upload a video that shows how your robot turns.
 
+```c++
+if (yaw > 400) {
+    stop();
+    auto_running = false;
+}
+keepYawSpeed(20, -filtered_gyr);
+```
 
+<img src="/FastRobots/images/Lab9/ttx.png" alt="ttx" style="zoom:40%;" />
 
 > Given the slowest speed you are able to achieve, how much does the orientation of the robot change during a single measurement? If you were spinning in the middle of a 4x4m2 empty, square room, what kind of accuracy can you expect?
 
-About 5 degree
-
-
+About 5 degrees
 
 ## Read data
 

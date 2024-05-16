@@ -1,0 +1,281 @@
+---
+layout: post
+title:  "Lab12"
+categories: jekyll update
+---
+
+## Introduction
+
+The final piece of puzzle is to have the robot navigate through a set of waypoints in that environment as quickly and accurately as possible. I decided to implement the full Bayes filter or a high level path planningg algorithm.
+
+The waypoints are as follows, there are minor adjustions from the recommended waypoints of the lab guide:
+
+```
+(-2, -3)    <-- start
+(-1, -1)
+(2, -1)
+(2, -3)
+(5, -3)
+(5, -1)
+(5, 3)
+(3, 3)
+(0, 3)
+(0, 0)      <-- end
+```
+
+<img src="/FastRobots/images/Lab12/target.png" alt="target" style="zoom:50%;" />
+
+## Code Implementation
+
+### Arduino
+
+The biggest change in code of Lab12 is that I add a state machine to control the robot:
+
+```c++
+switch (curr_status)
+{
+case Status::ROTATE_TO_ORIENT: {
+    if (!reachedTargetYaw(target_yaw)) {
+        keepYaw(target_yaw, yaw);
+    }
+    else {
+        uint16_t dist_to_next_pos = getPositionDist(curr_pos, target_pos);
+        uint16_t max_distance = 0;
+      
+        if (!getExactDistance(max_distance)) {
+            break;    
+        }
+        target_distance = max(max_distance - dist_to_next_pos, 80);
+
+        resetPIDController();
+        start_ms = millis();
+        stop();
+        curr_status = Status::MOVE_FORWARD;
+    }
+    break;
+}
+
+case Status::MOVE_FORWARD: {
+    if (!reachedTargetDist(target_distance)) {
+        forwardKeepYawAndDistance(target_yaw, yaw, target_distance, distance);
+    }
+    else {
+        yaw_before_spin = yaw;
+        target_yaw_ptr = 0;
+        resetPIDController();
+        start_ms = millis();
+        stop();
+        curr_status = Status::SCAN_SPIN;
+    }
+    break;
+}
+
+case Status::SCAN_SPIN: {
+    target_yaw = yaw_before_spin + target_yaws_increment[target_yaw_ptr];
+
+    keepYaw(target_yaw, yaw);
+
+    if (elapsed_ms >= STAY_YAW_INTERVAL_MS * target_yaw_ptr) {
+        if (target_yaw_ptr < SCANS_LEN) {
+            saveCurrRecordToArray();
+        }
+        target_yaw_ptr += 1;
+    }
+
+    // if keep spinning, target yaw will exceed 360
+    // so stop the car, end current loop
+    if (target_yaw_ptr >= SCANS_LEN + 1) {
+        stop();
+        auto_running = false;
+        yaw -= 360;
+        sendBackAString("Scan End");
+        resetPIDController();
+        start_ms = millis();
+        curr_status = Status::IDLE;
+    }
+    break;
+}
+
+default:
+    break;
+}
+```
+
+The robot has four states: 
+
++ **IDLE**: The robot stops until receiving command from laptop.
++ **ROTATE_TO_ORIENT**: Rotate until the head of the car is aligned with the target pose.
++ **MOVE_FORWARD**: Move forward while keep yaw unchanged until reached the target pose.
++ **SCAN_SPIN**: Now the car has reached the setpoint, spin the car 360 degrees to scan the map and tell the laptop that it has finished scanning.
+
+The most important controller function is `forwardKeepYawAndDistance()`, which have 4 parameters: 
+
++ setpoint of yaw
++ current yaw
++ setpoint of distance
++ current distance
+
+```c++
+void forwardKeepYawAndDistance(int16_t setpoint_yaw, int16_t yaw, uint16_t setpoint_distance, uint16_t distance) {
+    std::pair<int16_t, int16_t> two_straight_controls = position_pid(distance - setpoint_distance);
+    std::pair<int16_t, int16_t> two_angle_controls = angle_pid(yaw - setpoint_yaw);
+
+    std::pair<int16_t, int16_t> two_controls = {
+        two_straight_controls.first + two_angle_controls.first,
+        two_straight_controls.second + two_angle_controls.second
+    };
+
+    limitTwoControls(two_controls);
+    left_wheel_control(two_controls.first);
+    right_wheel_control(two_controls.second);
+}
+```
+
+In the code, `position_pid` is the pid function to control distance, `angle_pid` is the pid function to control yaw angle, they share the same structure but different parameters and return values.
+
+```c++
+// PID parameters for position control
+PIDParam pos_param = {
+    .Kp = 0.7,
+    .Ki = 0.1,
+    .Kd = 8
+};
+
+// PID parameters for angle control
+PIDParam angle_param = {
+    .Kp = 45,
+    .Ki = 2,
+    .Kd = 10
+};
+```
+
+`two_straight_controls` is the returned value of position pid, it has same value for both left and right motors. `two_angle_controls` is the returned value of angle pid, it has opposite value for left and right motors. By adding these two control values together, the robot will have the ability to both move forward towards a given distance and keep the given yaw angle unchanged.
+
+When the robot start to move, it will update its current position by the best belief position and update its current yaw angle by the best estimated yaw angle.
+
+Then it calculates the orientation to move to the next target pose.
+
+```c++
+yaw = belief_yaw;
+curr_pos = belief_pos;
+
+target_yaw = atan2(target_pos.y - curr_pos.y, target_pos.x - curr_pos.x) * 180.0 / PI;
+```
+
+### Jupyter
+
+The `perform_observation_loop` function is almost the same as Lab11.
+
+```python
+def perform_observation_loop(self, rot_vel=120):
+
+    timestamps_ms = []
+    distances = []
+    yaws = []
+
+    scanning = True
+    transfering = True
+
+    def notification_handler(uuid, byte_array):
+        nonlocal scanning
+        nonlocal transfering
+        ss = ble.bytearray_to_string(byte_array)
+
+        # Scan has ended
+
+        # Normal message
+        if ss.count('|') < 2:
+            print(ss)
+            if ss == "Scan End":
+                scanning = False
+            elif ss == "Transfer End":
+                transfering = False
+            return
+
+        idx, data = ss.split(':')
+        timestamp, distance, yaw = data.split('|')
+
+        timestamps_ms.append(int(timestamp))
+        distances.append(int(distance))
+        yaws.append(int(yaw))
+
+    observations_count = 18
+
+    self.ble.start_notify(ble.uuid['RX_STRING'], notification_handler)
+
+    self.ble.send_command(CMD.START_AUTO, "")
+
+    while scanning:
+        # print("scanning")
+        asyncio.run(asyncio.sleep(1))
+
+    self.ble.send_command(CMD.GET_HISTORY_DATA, "")
+
+    while transfering:
+        # print("transfering")
+        asyncio.run(asyncio.sleep(1))
+
+    ble.stop_notify(ble.uuid['RX_STRING'])
+
+    sensor_ranges = np.divide(np.array(distances), 1000)[np.newaxis].T
+    sensor_bearings = np.array(yaws)[np.newaxis].T
+
+    print(sensor_ranges.T)
+    print(sensor_bearings.T)
+
+    return sensor_ranges, sensor_bearings
+```
+
+I modified the update step:
+
+```python
+ble.send_command(CMD.SET_TARGET_POS, "-1|-1")
+
+time.sleep(1)
+cmdr.plot_gt(-1 * 0.3048, -1 * 0.3048)
+
+# Get Observation Data by executing a 360 degree rotation motion
+loc.get_observation_data()
+
+# Run Update Step
+loc.update_step()
+curr_belief = loc.plot_update_step_data(plot_data=True)
+
+ble.send_command(CMD.SET_CURR_BELIEF, f"{curr_belief[0]:.3f}|{curr_belief[1]:.3f}|{curr_belief[2]:.3f}")
+```
+
+The jupyter notebook will send the target position for the robot, and wait one second to make sure that the robot has successfully updated its new target.
+
+Then it calls `get_observation_data()`, which will make robots transfer from state IDLE to ROTATE_TO_ORIENT, that is to say, make the robot start to move.
+
+The distance data send back by robot will be processed by `notification_handler(uuid, byte_array)` function to be stored in the distance array.
+
+When the bayes filter successfully updated the belief map, it will plot the maximum belief position on the traj ploter in blue line and send it to robot to make the robot updates its current position.
+
+The above code block is repeated several times like this:
+
+```python
+ble.send_command(CMD.SET_TARGET_POS, "2|-3")
+
+time.sleep(1)
+cmdr.plot_gt(2 * 0.3048, -3 * 0.3048)
+
+# Get Observation Data by executing a 360 degree rotation motion
+loc.get_observation_data()
+
+# Run Update Step
+loc.update_step()
+curr_belief = loc.plot_update_step_data(plot_data=True)
+
+ble.send_command(CMD.SET_CURR_BELIEF, f"{curr_belief[0]:.3f}|{curr_belief[1]:.3f}|{curr_belief[2]:.3f}")
+```
+
+## Demonstration
+
+Video of the whole process:
+
+<iframe width="1606" height="683" src="https://www.youtube.com/embed/PLv82viuRhk" title="Fast Robot Lab12" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+Final display of both ground truth and belief:
+
+<img src="/FastRobots/images/Lab12/final.png" alt="final" style="zoom:50%;" />
