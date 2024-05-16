@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lab12 | Fast Robots 2024 Spring</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Lab12" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction" />
+<meta property="og:description" content="Introduction" />
+<link rel="canonical" href="http://localhost:4000/FastRobots/jekyll/update/2024/05/15/Lab12.html" />
+<meta property="og:url" content="http://localhost:4000/FastRobots/jekyll/update/2024/05/15/Lab12.html" />
+<meta property="og:site_name" content="Fast Robots 2024 Spring" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-05-15T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lab12" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-05-15T00:00:00-04:00","datePublished":"2024-05-15T00:00:00-04:00","description":"Introduction","headline":"Lab12","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/FastRobots/jekyll/update/2024/05/15/Lab12.html"},"url":"http://localhost:4000/FastRobots/jekyll/update/2024/05/15/Lab12.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FastRobots/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FastRobots/feed.xml" title="Fast Robots 2024 Spring" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FastRobots/">Fast Robots 2024 Spring</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FastRobots/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lab12</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-05-15T00:00:00-04:00" itemprop="datePublished">May 15, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="introduction">Introduction</h2>
+
+<p>The final piece of puzzle is to have the robot navigate through a set of waypoints in that environment as quickly and accurately as possible. I decided to implement the full Bayes filter or a high level path planningg algorithm.</p>
+
+<p>The waypoints are as follows, there are minor adjustions from the recommended waypoints of the lab guide:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(-2, -3)    &lt;-- start
+(-1, -1)
+(2, -1)
+(2, -3)
+(5, -3)
+(5, -1)
+(5, 3)
+(3, 3)
+(0, 3)
+(0, 0)      &lt;-- end
+</code></pre></div></div>
+
+<p><img src="/FastRobots/images/Lab12/target.png" alt="target" style="zoom:50%;" /></p>
+
+<h2 id="code-implementation">Code Implementation</h2>
+
+<h3 id="arduino">Arduino</h3>
+
+<p>The biggest change in code of Lab12 is that I add a state machine to control the robot:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">switch</span> <span class="p">(</span><span class="n">curr_status</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">case</span> <span class="n">Status</span><span class="o">::</span><span class="n">ROTATE_TO_ORIENT</span><span class="p">:</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reachedTargetYaw</span><span class="p">(</span><span class="n">target_yaw</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">keepYaw</span><span class="p">(</span><span class="n">target_yaw</span><span class="p">,</span> <span class="n">yaw</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="kt">uint16_t</span> <span class="n">dist_to_next_pos</span> <span class="o">=</span> <span class="n">getPositionDist</span><span class="p">(</span><span class="n">curr_pos</span><span class="p">,</span> <span class="n">target_pos</span><span class="p">);</span>
+        <span class="kt">uint16_t</span> <span class="n">max_distance</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">getExactDistance</span><span class="p">(</span><span class="n">max_distance</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>    
+        <span class="p">}</span>
+        <span class="n">target_distance</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">max_distance</span> <span class="o">-</span> <span class="n">dist_to_next_pos</span><span class="p">,</span> <span class="mi">80</span><span class="p">);</span>
+
+        <span class="n">resetPIDController</span><span class="p">();</span>
+        <span class="n">start_ms</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
+        <span class="n">stop</span><span class="p">();</span>
+        <span class="n">curr_status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">::</span><span class="n">MOVE_FORWARD</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">case</span> <span class="n">Status</span><span class="o">::</span><span class="n">MOVE_FORWARD</span><span class="p">:</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reachedTargetDist</span><span class="p">(</span><span class="n">target_distance</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">forwardKeepYawAndDistance</span><span class="p">(</span><span class="n">target_yaw</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">target_distance</span><span class="p">,</span> <span class="n">distance</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">yaw_before_spin</span> <span class="o">=</span> <span class="n">yaw</span><span class="p">;</span>
+        <span class="n">target_yaw_ptr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">resetPIDController</span><span class="p">();</span>
+        <span class="n">start_ms</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
+        <span class="n">stop</span><span class="p">();</span>
+        <span class="n">curr_status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">::</span><span class="n">SCAN_SPIN</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">case</span> <span class="n">Status</span><span class="o">::</span><span class="n">SCAN_SPIN</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">target_yaw</span> <span class="o">=</span> <span class="n">yaw_before_spin</span> <span class="o">+</span> <span class="n">target_yaws_increment</span><span class="p">[</span><span class="n">target_yaw_ptr</span><span class="p">];</span>
+
+    <span class="n">keepYaw</span><span class="p">(</span><span class="n">target_yaw</span><span class="p">,</span> <span class="n">yaw</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">elapsed_ms</span> <span class="o">&gt;=</span> <span class="n">STAY_YAW_INTERVAL_MS</span> <span class="o">*</span> <span class="n">target_yaw_ptr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">target_yaw_ptr</span> <span class="o">&lt;</span> <span class="n">SCANS_LEN</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">saveCurrRecordToArray</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="n">target_yaw_ptr</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// if keep spinning, target yaw will exceed 360</span>
+    <span class="c1">// so stop the car, end current loop</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">target_yaw_ptr</span> <span class="o">&gt;=</span> <span class="n">SCANS_LEN</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">stop</span><span class="p">();</span>
+        <span class="n">auto_running</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="n">yaw</span> <span class="o">-=</span> <span class="mi">360</span><span class="p">;</span>
+        <span class="n">sendBackAString</span><span class="p">(</span><span class="s">"Scan End"</span><span class="p">);</span>
+        <span class="n">resetPIDController</span><span class="p">();</span>
+        <span class="n">start_ms</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
+        <span class="n">curr_status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">::</span><span class="n">IDLE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">default</span><span class="o">:</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The robot has four states:</p>
+
+<ul>
+  <li><strong>IDLE</strong>: The robot stops until receiving command from laptop.</li>
+  <li><strong>ROTATE_TO_ORIENT</strong>: Rotate until the head of the car is aligned with the target pose.</li>
+  <li><strong>MOVE_FORWARD</strong>: Move forward while keep yaw unchanged until reached the target pose.</li>
+  <li><strong>SCAN_SPIN</strong>: Now the car has reached the setpoint, spin the car 360 degrees to scan the map and tell the laptop that it has finished scanning.</li>
+</ul>
+
+<p>The most important controller function is <code class="language-plaintext highlighter-rouge">forwardKeepYawAndDistance()</code>, which have 4 parameters:</p>
+
+<ul>
+  <li>setpoint of yaw</li>
+  <li>current yaw</li>
+  <li>setpoint of distance</li>
+  <li>current distance</li>
+</ul>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">forwardKeepYawAndDistance</span><span class="p">(</span><span class="kt">int16_t</span> <span class="n">setpoint_yaw</span><span class="p">,</span> <span class="kt">int16_t</span> <span class="n">yaw</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">setpoint_distance</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">distance</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int16_t</span><span class="p">,</span> <span class="kt">int16_t</span><span class="o">&gt;</span> <span class="n">two_straight_controls</span> <span class="o">=</span> <span class="n">position_pid</span><span class="p">(</span><span class="n">distance</span> <span class="o">-</span> <span class="n">setpoint_distance</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int16_t</span><span class="p">,</span> <span class="kt">int16_t</span><span class="o">&gt;</span> <span class="n">two_angle_controls</span> <span class="o">=</span> <span class="n">angle_pid</span><span class="p">(</span><span class="n">yaw</span> <span class="o">-</span> <span class="n">setpoint_yaw</span><span class="p">);</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int16_t</span><span class="p">,</span> <span class="kt">int16_t</span><span class="o">&gt;</span> <span class="n">two_controls</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">two_straight_controls</span><span class="p">.</span><span class="n">first</span> <span class="o">+</span> <span class="n">two_angle_controls</span><span class="p">.</span><span class="n">first</span><span class="p">,</span>
+        <span class="n">two_straight_controls</span><span class="p">.</span><span class="n">second</span> <span class="o">+</span> <span class="n">two_angle_controls</span><span class="p">.</span><span class="n">second</span>
+    <span class="p">};</span>
+
+    <span class="n">limitTwoControls</span><span class="p">(</span><span class="n">two_controls</span><span class="p">);</span>
+    <span class="n">left_wheel_control</span><span class="p">(</span><span class="n">two_controls</span><span class="p">.</span><span class="n">first</span><span class="p">);</span>
+    <span class="n">right_wheel_control</span><span class="p">(</span><span class="n">two_controls</span><span class="p">.</span><span class="n">second</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In the code, <code class="language-plaintext highlighter-rouge">position_pid</code> is the pid function to control distance, <code class="language-plaintext highlighter-rouge">angle_pid</code> is the pid function to control yaw angle, they share the same structure but different parameters and return values.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// PID parameters for position control</span>
+<span class="n">PIDParam</span> <span class="n">pos_param</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">Kp</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">Ki</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">Kd</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="p">};</span>
+
+<span class="c1">// PID parameters for angle control</span>
+<span class="n">PIDParam</span> <span class="n">angle_param</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">Kp</span> <span class="o">=</span> <span class="mi">45</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">Ki</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">Kd</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">two_straight_controls</code> is the returned value of position pid, it has same value for both left and right motors. <code class="language-plaintext highlighter-rouge">two_angle_controls</code> is the returned value of angle pid, it has opposite value for left and right motors. By adding these two control values together, the robot will have the ability to both move forward towards a given distance and keep the given yaw angle unchanged.</p>
+
+<p>When the robot start to move, it will update its current position by the best belief position and update its current yaw angle by the best estimated yaw angle.</p>
+
+<p>Then it calculates the orientation to move to the next target pose.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">yaw</span> <span class="o">=</span> <span class="n">belief_yaw</span><span class="p">;</span>
+<span class="n">curr_pos</span> <span class="o">=</span> <span class="n">belief_pos</span><span class="p">;</span>
+
+<span class="n">target_yaw</span> <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">target_pos</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">curr_pos</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">target_pos</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">curr_pos</span><span class="p">.</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">PI</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="jupyter">Jupyter</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">perform_observation_loop</code> function is almost the same as Lab11.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">perform_observation_loop</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">rot_vel</span><span class="o">=</span><span class="mi">120</span><span class="p">):</span>
+
+    <span class="n">timestamps_ms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">yaws</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">scanning</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">transfering</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">notification_handler</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="n">byte_array</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">scanning</span>
+        <span class="k">nonlocal</span> <span class="n">transfering</span>
+        <span class="n">ss</span> <span class="o">=</span> <span class="n">ble</span><span class="p">.</span><span class="nf">bytearray_to_string</span><span class="p">(</span><span class="n">byte_array</span><span class="p">)</span>
+
+        <span class="c1"># Scan has ended
+</span>
+        <span class="c1"># Normal message
+</span>        <span class="k">if</span> <span class="n">ss</span><span class="p">.</span><span class="nf">count</span><span class="p">(</span><span class="sh">'</span><span class="s">|</span><span class="sh">'</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nf">print</span><span class="p">(</span><span class="n">ss</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ss</span> <span class="o">==</span> <span class="sh">"</span><span class="s">Scan End</span><span class="sh">"</span><span class="p">:</span>
+                <span class="n">scanning</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">elif</span> <span class="n">ss</span> <span class="o">==</span> <span class="sh">"</span><span class="s">Transfer End</span><span class="sh">"</span><span class="p">:</span>
+                <span class="n">transfering</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">return</span>
+
+        <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">:</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">timestamp</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">yaw</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">'</span><span class="s">|</span><span class="sh">'</span><span class="p">)</span>
+
+        <span class="n">timestamps_ms</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
+        <span class="n">distances</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+        <span class="n">yaws</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">yaw</span><span class="p">))</span>
+
+    <span class="n">observations_count</span> <span class="o">=</span> <span class="mi">18</span>
+
+    <span class="n">self</span><span class="p">.</span><span class="n">ble</span><span class="p">.</span><span class="nf">start_notify</span><span class="p">(</span><span class="n">ble</span><span class="p">.</span><span class="n">uuid</span><span class="p">[</span><span class="sh">'</span><span class="s">RX_STRING</span><span class="sh">'</span><span class="p">],</span> <span class="n">notification_handler</span><span class="p">)</span>
+
+    <span class="n">self</span><span class="p">.</span><span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">START_AUTO</span><span class="p">,</span> <span class="sh">""</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">scanning</span><span class="p">:</span>
+        <span class="c1"># print("scanning")
+</span>        <span class="n">asyncio</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="n">asyncio</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">self</span><span class="p">.</span><span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">GET_HISTORY_DATA</span><span class="p">,</span> <span class="sh">""</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">transfering</span><span class="p">:</span>
+        <span class="c1"># print("transfering")
+</span>        <span class="n">asyncio</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="n">asyncio</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">ble</span><span class="p">.</span><span class="nf">stop_notify</span><span class="p">(</span><span class="n">ble</span><span class="p">.</span><span class="n">uuid</span><span class="p">[</span><span class="sh">'</span><span class="s">RX_STRING</span><span class="sh">'</span><span class="p">])</span>
+
+    <span class="n">sensor_ranges</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">divide</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">distances</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)[</span><span class="n">np</span><span class="p">.</span><span class="n">newaxis</span><span class="p">].</span><span class="n">T</span>
+    <span class="n">sensor_bearings</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">yaws</span><span class="p">)[</span><span class="n">np</span><span class="p">.</span><span class="n">newaxis</span><span class="p">].</span><span class="n">T</span>
+
+    <span class="nf">print</span><span class="p">(</span><span class="n">sensor_ranges</span><span class="p">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">sensor_bearings</span><span class="p">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sensor_ranges</span><span class="p">,</span> <span class="n">sensor_bearings</span>
+</code></pre></div></div>
+
+<p>I modified the update step:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">SET_TARGET_POS</span><span class="p">,</span> <span class="sh">"</span><span class="s">-1|-1</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cmdr</span><span class="p">.</span><span class="nf">plot_gt</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="mf">0.3048</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="mf">0.3048</span><span class="p">)</span>
+
+<span class="c1"># Get Observation Data by executing a 360 degree rotation motion
+</span><span class="n">loc</span><span class="p">.</span><span class="nf">get_observation_data</span><span class="p">()</span>
+
+<span class="c1"># Run Update Step
+</span><span class="n">loc</span><span class="p">.</span><span class="nf">update_step</span><span class="p">()</span>
+<span class="n">curr_belief</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="nf">plot_update_step_data</span><span class="p">(</span><span class="n">plot_data</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">SET_CURR_BELIEF</span><span class="p">,</span> <span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">curr_belief</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">|</span><span class="si">{</span><span class="n">curr_belief</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">|</span><span class="si">{</span><span class="n">curr_belief</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The jupyter notebook will send the target position for the robot, and wait one second to make sure that the robot has successfully updated its new target.</p>
+
+<p>Then it calls <code class="language-plaintext highlighter-rouge">get_observation_data()</code>, which will make robots transfer from state IDLE to ROTATE_TO_ORIENT, that is to say, make the robot start to move.</p>
+
+<p>The distance data send back by robot will be processed by <code class="language-plaintext highlighter-rouge">notification_handler(uuid, byte_array)</code> function to be stored in the distance array.</p>
+
+<p>When the bayes filter successfully updated the belief map, it will plot the maximum belief position on the traj ploter in blue line and send it to robot to make the robot updates its current position.</p>
+
+<p>The above code block is repeated several times like this:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">SET_TARGET_POS</span><span class="p">,</span> <span class="sh">"</span><span class="s">2|-3</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cmdr</span><span class="p">.</span><span class="nf">plot_gt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">0.3048</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="mf">0.3048</span><span class="p">)</span>
+
+<span class="c1"># Get Observation Data by executing a 360 degree rotation motion
+</span><span class="n">loc</span><span class="p">.</span><span class="nf">get_observation_data</span><span class="p">()</span>
+
+<span class="c1"># Run Update Step
+</span><span class="n">loc</span><span class="p">.</span><span class="nf">update_step</span><span class="p">()</span>
+<span class="n">curr_belief</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="nf">plot_update_step_data</span><span class="p">(</span><span class="n">plot_data</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ble</span><span class="p">.</span><span class="nf">send_command</span><span class="p">(</span><span class="n">CMD</span><span class="p">.</span><span class="n">SET_CURR_BELIEF</span><span class="p">,</span> <span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">curr_belief</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">|</span><span class="si">{</span><span class="n">curr_belief</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">|</span><span class="si">{</span><span class="n">curr_belief</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="demonstration">Demonstration</h2>
+
+<p>Video of the whole process:</p>
+
+<iframe width="1606" height="683" src="https://www.youtube.com/embed/PLv82viuRhk" title="Fast Robot Lab12" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<p>Final display of both ground truth and belief:</p>
+
+<p><img src="/FastRobots/images/Lab12/final.png" alt="final" style="zoom:50%;" /></p>
+
+  </div><a class="u-url" href="/FastRobots/jekyll/update/2024/05/15/Lab12.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FastRobots/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fast Robots 2024 Spring</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Fast Robots 2024 Spring</li><li><a class="u-email" href="mailto:dy297@cornell.edu">dy297@cornell.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/yang-d19"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#github"></use></svg> <span class="username">yang-d19</span></a></li><li><a href="https://www.linkedin.com/in/ding-yang-829248219"><svg class="svg-icon"><use xlink:href="/FastRobots/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">ding-yang-829248219</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This website displays the content in the course Fast Robots (Cornell ECE 5160 Spring 2024).</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
